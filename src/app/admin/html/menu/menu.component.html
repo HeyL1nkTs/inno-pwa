@@ -1,0 +1,10 @@
+<div class="contenido">
+    <div class="opciones">
+        @for (option of menu; track option) {
+        <a [routerLink]="option.url" routerLinkActive="active">
+            <mat-icon [fontIcon]="option.icon"></mat-icon>
+            <span>{{option.name}}</span>
+        </a>
+        }
+    </div>
+</div>

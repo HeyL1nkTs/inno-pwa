@@ -1,0 +1,119 @@
+.contenido {
+    border-left: 1px solid var(--border-soft);
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-direction: column;
+    background-color: var(--background-soft);
+}
+
+.console {
+    width: 90%;
+    height: 50%;
+    padding: 20px;
+    border-bottom: 1px solid var(--border-soft);
+    overflow: auto;
+}
+
+.card {
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    background-color: white;
+    border: 1px solid var(--item-border);
+    box-shadow: 0 4px 6px var(--item-border);
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+}
+
+.transactions{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+}
+
+.content {
+    display: flex;
+    justify-content: space-between;
+}
+
+span {
+    display: inline-block;
+}
+
+.card .header span,
+.card .content span {
+    margin-right: 10px;
+}
+
+.card .header span:last-child,
+.card .content span:last-child {
+    margin-left: auto;
+}
+
+.big-button {
+    color: white;
+    background-color: var(--button-color);
+    border: none;
+    font-size: 24px;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 4px 6px var(--button-color);
+    transition: background-color 0.3s ease;
+}
+
+.big-button:hover {
+    background-color: var(--button-color-hover);
+}
+
+.big-button:active {
+    background-color: var(--button-color-hover);
+}
+
+.big-button:focus {
+    outline: none;
+}
+
+.status {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.slider{
+    display: none;
+}
+
+@media only screen and (min-width: 3440px) {}
+
+@media only screen and (min-width: 2560px) and (max-width: 3439px) {}
+
+@media only screen and (min-width: 1920px) and (max-width: 2559px) {}
+
+@media only screen and (min-width: 1440px) and (max-width: 1919px) {}
+
+@media only screen and (min-width: 768px) and (max-width: 1439px) {}
+
+@media only screen and (max-width: 767px) {
+    .slider{
+        display: block;
+        width: 100%;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .slider mat-icon{
+        height: 45px;
+        width: 45px;
+        font-size: 45px;
+    }
+}

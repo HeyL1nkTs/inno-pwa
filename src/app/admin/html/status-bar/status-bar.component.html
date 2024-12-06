@@ -1,0 +1,39 @@
+<div class="contenido">
+
+    <div class="slider" (click)="toogleIcon()">
+        <mat-icon>{{sliderIcon}}</mat-icon>
+    </div>
+
+    <div class="console">
+        @if (!status) {
+        <h3>Porfavor! Inicia la venta :D</h3>
+        } @else {
+        @for (card of cardData; track card) {
+        <div class="card">
+            <div class="header">
+                <span>Vendedor: <strong>{{ card.seller }}</strong></span>
+                <span>{{ card.date }}</span>
+            </div>
+            <div class="transactions">
+                <span>Ingreso: $ {{ card.amountReceived }}</span>
+                <span>Salida: $ {{ card.change }}</span>
+            </div>
+            <div class="content">
+                <span>No. Orden: {{ card.orderNumber }}</span>
+                <span>Total: ${{ card.total }}</span>
+            </div>
+        </div>
+        }
+        }
+    </div>
+
+    <div class="status">
+        @if (!status) {
+        <button type="button" class="big-button" (click)="statusDay()">Iniciar Venta</button>
+        } @else {
+        <h3>Ganancias actuales: $ {{current_amount}}</h3>
+        <button type="button" class="big-button" (click)="statusDay()">Detener Venta</button>
+        }
+    </div>
+
+</div>

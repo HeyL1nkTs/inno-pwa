@@ -1,0 +1,27 @@
+<div class="container" (click)="close()">
+    <div class="card" [@scaleAnimation]="state" (click)="$event.stopPropagation()">
+        <button class="close" id="close" type="button" (click)="close()"><mat-icon>close</mat-icon></button>
+        <div class="information">
+            <table mat-table [dataSource]="data">
+                <ng-container matColumnDef="name">
+                    <th mat-header-cell *matHeaderCellDef>Name</th>
+                    <td mat-cell *matCellDef="let element">{{element?.name}}</td>
+                </ng-container>
+                <ng-container matColumnDef="price">
+                    <th mat-header-cell *matHeaderCellDef>Price</th>
+                    <td mat-cell *matCellDef="let element">{{element?.price}}</td>
+                </ng-container>
+                <ng-container matColumnDef="required">
+                    <th mat-header-cell *matHeaderCellDef>Required</th>
+                    <td mat-cell *matCellDef="let element">{{element?.required}}</td>
+                </ng-container>
+                <ng-container matColumnDef="discount">
+                    <th mat-header-cell *matHeaderCellDef>Discount</th>
+                    <td mat-cell *matCellDef="let element">{{element?.discount}}</td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="tabColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: tabColumns;"></tr>
+            </table>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,138 @@
+/* Contenedor principal */
+.container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    /*border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    background-color: #fff;*/
+    height: auto;
+    overflow: auto;
+    max-height: 80vh;
+}
+
+/* Título y botón de cabecera */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 24px;
+}
+
+/* Lista de datos */
+.list-container mat-list-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Distribuye el contenido */
+    border-bottom: 1px solid #eee;
+    padding: 10px 0;
+    height: auto;
+}
+
+.row{
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.row .actions {
+    display: flex;
+    gap: 10px;
+}
+
+.actions mat-icon {
+    cursor: pointer;
+}
+
+.details .name {
+    font-weight: bold;
+}
+
+.details .price {
+    margin-top: 5px;
+    color: #757575;
+    font-size: 0.9rem;
+}
+
+
+/* Formulario */
+.form-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-height: none;
+}
+
+.form-container .form-field {
+    width: 100%;
+}
+
+.chip-list {
+    display: flex;
+    flex-wrap: wrap; /* Permite que los chips pasen a la siguiente línea */
+    gap: 10px; /* Añade espacio entre los chips */
+    padding: 10px 0; /* Añade espacio superior e inferior */
+    max-width: 100%; /* Asegura que el contenedor no tenga restricciones */
+}
+
+mat-chip {
+    max-width: 100%; /* Permite que el texto en los chips no se corte */
+    white-space: nowrap; /* Opcional: evita que el texto haga salto de línea dentro del chip */
+}
+
+
+.chip-list mat-chip-set {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.chip-list mat-chip {
+    background-color: #e0f7fa;
+    color: #00796b;
+}
+
+.chip-list mat-chip mat-icon {
+    margin-left: 5px;
+    color: #004d40;
+}
+
+.chip-list button {
+    align-self: flex-start;
+}
+
+/* Botones del formulario */
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.form-actions button {
+    min-width: 100px;
+}
+
+/* Diálogo para la selección de productos */
+.dialog-content {
+    max-height: 300px; /* Altura máxima del contenedor */
+    overflow: auto; /* Habilita el scroll si excede la altura */
+}
+
+mat-dialog-content {
+    max-height: 400px;
+    overflow-y: auto;
+    padding: 20px;
+}
+
+mat-dialog-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}

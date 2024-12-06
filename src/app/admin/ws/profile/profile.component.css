@@ -1,0 +1,53 @@
+.container{
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.img-profile {
+    margin-bottom: 10px;
+    position: relative;
+}
+
+.img-profile img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50px;
+}
+
+.img-profile .edit-prof{
+    position: absolute;
+    background-color: var(--button-color);
+    color: white;
+    padding: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btn-extras {
+    background-color: var(--button-color);
+    color: white;
+    cursor: pointer;
+}
+
+.btn-extras:hover {
+    background-color: var(--button-color-hover);
+}
+
+.btn-supplies{
+    padding: 10px;
+    margin: 10px 0px;
+}
+
+#select {
+    cursor: pointer;
+}
+
+@media only screen and (max-width: 767px) {
+    .container {
+        height: auto;
+    }
+}

@@ -1,0 +1,78 @@
+/* You can add global styles to this file, and also import other style files */
+
+html, body { height: 100%; overflow: hidden;}
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.tooltip{
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    position: relative;
+    padding: 10px;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.show-tooltip{
+    opacity: 1;
+}
+
+:root{
+    --background-soft: #CAE9FF;
+    --border-soft: rgba(0, 0, 0, 0.08);
+    --item-border: #1B4965;
+    --item-color: #5FA8D3;
+    --button-color: #1B4965;
+    --button-color-hover: #1b4965dd;
+    --background-high: #62B6CB;
+    --white-opacity: rgba(255, 255, 255, 0.59);
+    --background-light: rgba(0, 0, 0, 0.689);
+    --out-stock: rgba(243, 105, 105, 0.781);
+}
+
+.light{
+}
+
+.close{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(235, 123, 123, 0.837);
+    border: none;
+    border-radius: 5px;
+    padding: 5px;
+    color: white;
+    cursor: pointer;
+}
+
+.close:hover{
+    background-color: rgba(235, 80, 80, 0.9);
+}
+
+.open{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(123, 235, 136, 0.837);
+    border: none;
+    border-radius: 5px;
+    padding: 5px;
+    color: white;
+    cursor: pointer;
+}
+
+.open:hover{
+    background-color: rgba(123, 235, 80, 0.9);
+}
+
+@media only screen and (min-width: 3440px) {}
+
+@media only screen and (min-width: 2560px) and (max-width: 3439px) {}
+
+@media only screen and (min-width: 1920px) and (max-width: 2559px) {}
+
+@media only screen and (min-width: 1440px) and (max-width: 1919px) {}
+
+@media only screen and (min-width: 768px) and (max-width: 1439px) {}
+
+@media only screen and (max-width: 767px) {
+}

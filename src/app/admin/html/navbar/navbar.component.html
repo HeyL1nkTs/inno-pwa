@@ -1,0 +1,24 @@
+<nav>
+    <div class="left">
+        <img src="logo-flat-no-background.png" alt="logo">
+
+        <div class="timestamp">
+            <span id="date">{{currentDate}}</span>
+            <span id="time">{{currentTime}}</span>
+        </div>
+    </div>
+
+    <div class="menu" (click)="mobileMenu()">
+        <mat-icon>account_circle</mat-icon>
+
+        <div class="options" id="opc">
+            @if(isAdmin){
+                <a href="/auth/logout">Logout</a>
+                <a href="/admin/profile">Manage profile</a>
+            } @else {
+                <a href="/auth/logout">Logout</a>
+                <a href="/client/profile">Manage profile</a>
+            }
+        </div>
+    </div>
+</nav>

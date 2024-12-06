@@ -1,0 +1,23 @@
+@if (fadeState){
+    <div class="container" @fadeAnimation>
+
+        <h1>{{title}}</h1>
+
+        <div class="search-options">
+            <div class="search-bar">
+                <mat-icon>search</mat-icon>
+                <input type="text" placeholder="Search" [(ngModel)]="searchText">
+            </div>
+        </div>
+
+        <div class="catalog">
+            <app-catalog module="supplies" [title]="title" [search]="searchText" [items]="data" (updateItemList)="updateItemList($event)"></app-catalog>
+        </div>
+
+    </div>
+}
+
+@if (wip){
+    <app-loading></app-loading>
+}
+

@@ -1,0 +1,10 @@
+<div class="container">
+    <app-navbar class="navbar"></app-navbar>
+    <div class="content">
+        <app-menu class="menu"></app-menu>
+        <div class="main">
+            <router-outlet></router-outlet>
+        </div>
+        <app-status-bar class="status-bar" id="status-bar" (openMenu)="openDashboard($event)"></app-status-bar>
+    </div>
+</div>

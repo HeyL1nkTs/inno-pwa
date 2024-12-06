@@ -1,0 +1,48 @@
+.container{
+    width: 100%;
+    height: 100vh;
+    background-color: var(--background-soft);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.logo{
+    margin-bottom: 20px;
+}
+
+.logo img{
+    width: 300px;
+    height: auto;
+}
+
+.form-wrapper form{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.question{
+    margin-bottom: 5px;
+}
+
+.btn-add {
+    width: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-radius: 4px;
+    font-weight: bold;
+    background-color: var(--button-color);
+    color: white;
+    cursor: pointer;
+    outline: none;
+    border: 1px solid var(--button-color);
+    transition: background-color 0.3s ease;
+    margin: 20px 0px;
+}

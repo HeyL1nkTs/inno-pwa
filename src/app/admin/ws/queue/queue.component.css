@@ -1,0 +1,40 @@
+.table-container {
+    width: 80%;
+    padding: 20px;
+    height: 70%;
+    margin: 0px auto;
+    max-height: 80vh;
+    overflow: auto;
+}
+
+table {
+    width: 100%;
+}
+
+pre {
+    margin: 0;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+h1{
+    text-align: center;
+}
+
+.icon{
+    margin-top: 20px;
+    font-size: 20px;
+    height: auto;
+    width: auto;
+    cursor: pointer;
+    color: var(--button-color);
+    top: 0px;
+    border-radius: 5px;
+    outline: none;
+    border: none;
+    padding: 5px 10px;
+}
+
+.icon:hover{
+    color: var(--button-color-hover);
+}

@@ -1,0 +1,32 @@
+<div class="container" @fadeAnimation>
+    <h1> Dashboard</h1>
+
+    <section>
+        <mat-button-toggle-group name="favoriteColor" aria-label="Favorite Color" [hideSingleSelectionIndicator]="true">
+            <mat-button-toggle value="day" (click)="loadInformation('day')">Day</mat-button-toggle>
+            <mat-button-toggle value="week" (click)="loadInformation('week')">Week</mat-button-toggle>
+            <mat-button-toggle value="month" (click)="loadInformation('month')">Month</mat-button-toggle>
+        </mat-button-toggle-group>
+    </section>
+
+    <div class="information">
+        <div class="chart-container">
+            <canvas id="canva"></canvas>
+        </div>
+
+        <div class="sellings-container">
+            <div class="most" appTooltip="Swlling amount: {{informationSelling.mostSellingAmount}}" placement="top" [delay]="200">
+                <img src="" alt="">
+                <span>
+                    {{informationSelling.mostSelling}}
+                </span>
+            </div>
+            <div class="least" appTooltip="Swlling amount: {{informationSelling.lessSellingAmount}}" placement="top" [delay]="200">
+                <img src="" alt="">
+                <span>
+                    {{informationSelling.lessSelling}}
+                </span>
+            </div>
+        </div>
+    </div>
+</div>

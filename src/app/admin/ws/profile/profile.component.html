@@ -1,0 +1,39 @@
+<div class="container">
+
+    <h1>Profile</h1>
+    <br>
+
+    <div class="user-info">
+        <div class="input-wrapper">
+            <mat-form-field appearance="outline" class="question">
+                <mat-label>Name</mat-label>
+                <input matInput placeholder="Write name" [(ngModel)] = "name">
+                <mat-icon id="select" matSuffix (click)="change('name')">subdirectory_arrow_right</mat-icon>
+            </mat-form-field>
+        </div>
+
+        <div class="input-wrapper">
+            <mat-form-field appearance="outline" class="question">
+                <mat-label>Email</mat-label>
+                <input matInput placeholder="Write email" [(ngModel)] = "email">
+                <mat-icon id="select" matSuffix (click)="change('email')">subdirectory_arrow_right</mat-icon>
+            </mat-form-field>
+        </div>
+
+        <div class="input-wrapper">
+            <mat-form-field appearance="outline" class="question">
+                <mat-label>Phone</mat-label>
+                <input matInput placeholder="Write phone" [(ngModel)] = "phone">
+                <mat-icon id="select" matSuffix (click)="change('phone')">subdirectory_arrow_right</mat-icon>
+            </mat-form-field>
+        </div>
+
+        <div class="input-wrapper">
+            <mat-form-field appearance="outline" class="question">
+                <mat-label>Password</mat-label>
+                <input matInput placeholder="Write phone" [(ngModel)] = "password">
+                <mat-icon id="select" matSuffix (click)="change('password')">subdirectory_arrow_right</mat-icon>
+            </mat-form-field>
+        </div>
+    </div>
+</div>

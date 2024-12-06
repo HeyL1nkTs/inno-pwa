@@ -1,0 +1,357 @@
+<!-- app.component.html -->
+@if(controlMobile){
+<div class="container">
+    @if(!mobileCapture){
+    <!-- Parte 1: Productos -->
+    <div class="products-section">
+        <div class="title-group">
+            <button class="title" type="button" (click)="changeSearch('products')">
+                <h2>Productos</h2>
+            </button>
+            <button class="title" type="button" (click)="changeSearch('combos')">
+                <h2>Combos</h2>
+            </button>
+            <mat-icon id="mobileIcon" [ngClass]="{'open': !mobileCapture, 'close': mobileCapture}"
+                (click)="showCart()">{{mobileButton}}</mat-icon>
+        </div>
+
+        <!-- Barra de búsqueda -->
+        <mat-form-field appearance="outline" class="search-bar">
+            <mat-label>Buscar productos</mat-label>
+            <mat-icon matPrefix>search</mat-icon>
+            <input matInput placeholder="Buscar..." (input)="filterProducts($event)" />
+        </mat-form-field>
+
+        <!-- Grid de productos -->
+        <div class="products-grid">
+            @for (product of filteredProducts; track product) {
+            <div class="product-item" [attr.draggable]="isDesktop ? 'true' : null"
+                (dragstart)="onDragStart($event, product)">
+                <img [src]="product.image_url" alt="Product Image" />
+                <div class="product-info">
+                    <h4>{{ product.name }}</h4>
+                    <p>${{ product.price }}</p>
+                </div>
+                @if(product.stock > 0) {
+                <div class="quantity-control">
+                    <button mat-button color="primary" class="icon-default"
+                        (click)="decreaseQuantity(product)">-</button>
+                    <span>{{ product.quantity }}</span>
+                    <button mat-button color="primary" class="icon-default"
+                        (click)="increaseQuantity(product)">+</button>
+                </div>
+                @if (!isDesktop) {
+                <button mat-raised-button color="primary" class="icon-default" id="send"
+                    (click)="generateEntry(product)">
+                    Agregar a la orden
+                </button>
+                }
+                } @else {
+                <div class="quantity-control">
+                    <span class="out-of-stock">Agotado</span>
+                </div>
+                }
+            </div>
+            }
+        </div>
+    </div>
+    }
+
+    @if(mobileCapture) {
+    <!-- Parte 2: Carrito -->
+    <div class="cart-section" (dragover)="allowDrop($event)" (drop)="onDrop($event)">
+        <span>
+            <h2>Carrito de Compras</h2>
+            <mat-icon id="mobileIcon" [ngClass]="{'open': !mobileCapture, 'close': mobileCapture}"
+                (click)="showCart()">{{mobileButton}}</mat-icon>
+        </span>
+        <!-- Lista de items en el carrito -->
+        @for( item of cart; track item) {
+        <div class="cart-item">
+            <div class="item-info">
+                <div class="cart-info">
+                    <h4>{{ item.name }}</h4>
+                    <p class="price">${{ item.price }}</p>
+                </div>
+                <mat-icon appTooltip="Delete" placement="top" [delay]="200"
+                    (click)="removeFromCart(item.temporalId)">delete</mat-icon>
+                @if((item?.extrasRelacionados?.length || 0) > 0) {
+                <mat-icon appTooltip="Extras" placement="top" [delay]="200"
+                    (click)="openExtrasSlider(item)">add</mat-icon>
+                }
+                @if( (item?.supplies?.length || 0) > 0) {
+                <mat-icon appTooltip="Personalize" placement="top" [delay]="200"
+                    (click)="openSupplySlider(item)">{{supplyExpander ? 'expand_less' : 'expand_more'}}</mat-icon>
+                }
+                @if( (item?.products?.length || 0) > 0) {
+                <mat-icon appTooltip="Personalize" placement="top" [delay]="200"
+                    (click)="openComboSlider(item)">{{supplyExpander ? 'expand_less' : 'expand_more'}}</mat-icon>
+                }
+            </div>
+
+            <!-- Expander para supplies -->
+            @if(item.expander) {
+            <div class="cart-expander">
+                <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>Perzonalice</mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <div class="expander-content">
+                        @for (supply of item.supplies; track supply) {
+                        <mat-checkbox [checked]="supply.selected"
+                            (change)="updateItemPriceBySupply(item.temporalId, supply)">
+                            {{ supply.name }} - ${{ supply.price }}
+                        </mat-checkbox>
+                        }
+                    </div>
+                </mat-expansion-panel>
+            </div>
+            }
+
+            <!-- Expander para extras -->
+            @if( item.expanderEx ) {
+            <div class="cart-expander">
+                <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>Add</mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <div class="expander-content">
+                        @for (extra of item.extrasRelacionados; track extra) {
+                        <mat-checkbox [checked]="extra.selected"
+                            (change)="updateItemPriceByExtra(item.temporalId, extra)">
+                            {{ extra.name }} - ${{ extra.price }}
+                        </mat-checkbox>
+                        }
+                    </div>
+                </mat-expansion-panel>
+            </div>
+            }
+
+            <!-- Expander para combos -->
+            @if( item.expanderCo ) {
+            <div class="cart-expander">
+                <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>Products</mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <div class="expander-content">
+                        @for (product of item.products; track product) {
+                        <mat-checkbox [checked]="product.selected" (change)="updateCombo(item.temporalId, product)">
+                            {{ product.name }}
+                        </mat-checkbox>
+                        }
+                    </div>
+                </mat-expansion-panel>
+            </div>
+            }
+        </div>
+        }
+
+        <!-- Resumen total del carrito -->
+        <div class="total-summary">
+            <span class="total-price">Total: ${{ totalPrice() }}</span>
+            <button mat-raised-button class="order-btn" (click)="submitOrder()">Continuar con la Orden</button>
+        </div>
+    </div>
+    }
+</div>
+}
+
+@if(!controlMobile) {
+<!-- app.component.html -->
+<div class="container">
+    <!-- Parte 1: Productos -->
+    <div class="products-section">
+        <span>
+            <div class="title-group">
+                <button class="title" type="button" (click)="changeSearch('products')">
+                    <h2>Productos</h2>
+                </button>
+                <button class="title" type="button" (click)="changeSearch('combos')">
+                    <h2>Combos</h2>
+                </button>
+            </div>
+            <mat-icon id="mobileIcon" [ngClass]="{'open': !mobileCapture, 'close': mobileCapture}"
+                (click)="showCart()">{{mobileButton}}</mat-icon>
+        </span>
+
+        <!-- Barra de búsqueda -->
+        <mat-form-field appearance="outline" class="search-bar">
+            <mat-label>Buscar productos</mat-label>
+            <mat-icon matPrefix>search</mat-icon>
+            <input matInput placeholder="Buscar..." (input)="filterProducts($event)" />
+        </mat-form-field>
+
+        <!-- Grid de productos -->
+        <div class="products-grid">
+            @for (product of filteredProducts; track product) {
+            <div class="product-item" [attr.draggable]="isDesktop ? 'true' : null"
+                (dragstart)="onDragStart($event, product)">
+                <img [src]="product.image_url" alt="Product Image" />
+                <div class="product-info">
+                    <h4>{{ product.name }}</h4>
+                    <p>${{ product.price }}</p>
+                </div>
+                @if(product.stock > 0) {
+                <div class="quantity-control">
+                    <button mat-button color="primary" class="icon-default"
+                        (click)="decreaseQuantity(product)">-</button>
+                    <span>{{ product.quantity }}</span>
+                    <button mat-button color="primary" class="icon-default"
+                        (click)="increaseQuantity(product)">+</button>
+                </div>
+                @if (!isDesktop) {
+                <button mat-raised-button color="primary" class="icon-default" id="send"
+                    (click)="generateEntry(product)">
+                    Agregar a la orden
+                </button>
+                }
+                } @else {
+                <div class="quantity-control">
+                    <span class="out-of-stock">Agotado</span>
+                </div>
+                }
+            </div>
+            }
+        </div>
+    </div>
+
+    <!-- Parte 2: Carrito -->
+    <div class="cart-section" (dragover)="allowDrop($event)" (drop)="onDrop($event)">
+        <span>
+            <h2>Carrito de Compras</h2>
+            <mat-icon id="mobileIcon" [ngClass]="{'open': !mobileCapture, 'close': mobileCapture}"
+                (click)="showCart()">{{mobileButton}}</mat-icon>
+        </span>
+        <!-- Lista de items en el carrito -->
+        @for( item of cart; track item) {
+        <div class="cart-item">
+            <div class="item-info">
+                <div class="cart-info">
+                    <h4>{{ item.name }}</h4>
+                    <p class="price">${{ item.price }}</p>
+                </div>
+                <mat-icon appTooltip="Delete" placement="top" [delay]="200"
+                    (click)="removeFromCart(item.temporalId)">delete</mat-icon>
+                @if((item?.extrasRelacionados?.length || 0) > 0) {
+                <mat-icon appTooltip="Extras" placement="top" [delay]="200"
+                    (click)="openExtrasSlider(item)">add</mat-icon>
+                }
+                @if( (item?.supplies?.length || 0) > 0) {
+                <mat-icon appTooltip="Personalize" placement="top" [delay]="200"
+                    (click)="openSupplySlider(item)">{{supplyExpander ? 'expand_less' : 'expand_more'}}</mat-icon>
+                }
+                @if( (item?.products?.length || 0) > 0) {
+                <mat-icon appTooltip="Personalize" placement="top" [delay]="200"
+                    (click)="openComboSlider(item)">{{supplyExpander ? 'expand_less' : 'expand_more'}}</mat-icon>
+                }
+            </div>
+
+            <!-- Expander para supplies -->
+            @if(item.expander) {
+            <div class="cart-expander">
+                <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>Perzonalice</mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <div class="expander-content">
+                        @for (supply of item.supplies; track supply) {
+                        <mat-checkbox [checked]="supply.selected"
+                            (change)="updateItemPriceBySupply(item.temporalId, supply)">
+                            {{ supply.name }} - ${{ supply.price }}
+                        </mat-checkbox>
+                        }
+                    </div>
+                </mat-expansion-panel>
+            </div>
+            }
+
+            <!-- Expander para extras -->
+            @if( item.expanderEx ) {
+            <div class="cart-expander">
+                <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>Add</mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <div class="expander-content">
+                        @for (extra of item.extrasRelacionados; track extra) {
+                        <mat-checkbox [checked]="extra.selected"
+                            (change)="updateItemPriceByExtra(item.temporalId, extra)">
+                            {{ extra.name }} - ${{ extra.price }}
+                        </mat-checkbox>
+                        }
+                    </div>
+                </mat-expansion-panel>
+            </div>
+            }
+
+            <!-- Expander para combos -->
+            @if( item.expanderCo ) {
+            <div class="cart-expander">
+                <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>Products</mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <div class="expander-content">
+                        @for (product of item.products; track product) {
+                        <mat-checkbox [checked]="product.selected" (change)="updateCombo(item.temporalId, product)">
+                            {{ product.name }}
+                        </mat-checkbox>
+                        }
+                    </div>
+                </mat-expansion-panel>
+            </div>
+            }
+        </div>
+        }
+
+        <!-- Resumen total del carrito -->
+        <div class="total-summary">
+            <span class="total-price">Total: ${{ totalPrice() }}</span>
+            <button mat-raised-button class="order-btn" (click)="submitOrder()">Continuar con la Orden</button>
+        </div>
+    </div>
+</div>
+}
+
+@if(paymentProcess) {
+<div class="overlay">
+    <div class="payment-container">
+        <span id="payment-option">
+            <h2>Payment Details</h2>
+            <mat-icon class="close" (click)="cancelPayment()">close</mat-icon>
+        </span>
+
+        @if(!showDetails) {
+        <!-- Payment Type Selector -->
+        <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Tipo de pago</mat-label>
+            <mat-select [(value)]="paymentType">
+                <mat-option value="card">Tarjeta</mat-option>
+                <mat-option value="cash">Efectivo</mat-option>
+                <mat-option value="transfer">Transferencia</mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <!-- Amount Received Input -->
+        <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Cantidad Recibida</mat-label>
+            <input matInput type="number" [(ngModel)]="amountReceived" />
+        </mat-form-field>
+
+        <!-- Continue Button -->
+        <button mat-raised-button color="primary" class="icon-default" id="send"
+            (click)="calculateChange()">Continuar</button>
+        } @else {
+        <!-- Payment Summary -->
+        <div class="payment-summary">
+            <h3>Resumen del Pago</h3>
+            <p><strong>Total a pagar:</strong> {{ totalPrice() | currency }}</p>
+            <p><strong>Cantidad Recibida:</strong> {{ amountReceived | currency }}</p>
+            <p><strong>Cambio:</strong> {{ change | currency }}</p>
+            <button class="icon-default" id="send" (click)="endOrder()">Finalizar</button>
+        </div>
+        }
+    </div>
+</div>
+}

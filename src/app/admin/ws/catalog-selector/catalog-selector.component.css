@@ -1,0 +1,48 @@
+.container{
+    width: 100%;
+    height: 100vh;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.search-options{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    justify-content: center;
+    height: 28px;
+}
+
+.search-bar{
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0px 10px;
+    border-radius: 10px;
+    border: 1px solid var(--button-color);
+}
+
+.search-bar input{
+    border: none;
+    font-size: 15px;
+    margin-right: 5px;
+}
+
+.search-bar mat-icon{
+    color: var(--button-color);
+    margin-right: 5px;
+}
+
+.search-bar input:focus{
+    outline: none;
+}
+
+.catalog{
+    width: 90%;
+    margin-top: 50px;
+    height: 65vh;
+}
