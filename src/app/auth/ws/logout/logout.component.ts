@@ -26,7 +26,7 @@ export class LogoutComponent implements OnInit {
 
       if (navigator.onLine) {
         const user = this.jwt.getPayload(localStorage.getItem('token'));
-        const response = await this.authService.logout(user.sessionId);
+        const response = await this.authService.logout(user);
         if (response) {
           localStorage.removeItem('token');
           localStorage.removeItem('isConnected');
@@ -43,6 +43,8 @@ export class LogoutComponent implements OnInit {
         icon: 'error',
         title: 'Oops...',
         text: 'No se pudo cerrar session'
+      }).then(()=>{
+        this.router.navigate(['/']);
       });
     }
   }

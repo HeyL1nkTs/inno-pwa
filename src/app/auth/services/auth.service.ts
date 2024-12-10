@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../environment/environment';
 import { firstValueFrom } from 'rxjs';
+import { User } from '../../models/user.model';
 
 @Injectable({
   providedIn: 'root'
@@ -50,7 +51,7 @@ export class AuthService {
     localStorage.removeItem(this.tokenKey);
   }
 
-  logout(id: number) {
-    return firstValueFrom(this.http.delete(this.url + this.module + '/logout/' + id));
+  logout(user: User) {
+    return firstValueFrom(this.http.post(this.url + this.module + '/logout', JSON.stringify(user), { headers: this.headers }));
   }
 }
