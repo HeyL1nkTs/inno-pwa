@@ -28,12 +28,12 @@ export class MenuComponent {
     if (this.isAdmin) {
       this.menu = [
         { name: 'Dashboard', icon: 'home', url: '/admin/dashboard' },
-        { name: 'Supplies', icon: 'category', url: '/admin/catalog/supplies' },
-        { name: 'Products', icon: 'shopping_cart', url: '/admin/catalog/products' },
-        { name: 'Combo', icon: 'stars', url: '/admin/catalog/combos' },
+        { name: 'Suministros', icon: 'category', url: '/admin/catalog/supplies' },
+        { name: 'Productos', icon: 'shopping_cart', url: '/admin/catalog/products' },
+        { name: 'Combos', icon: 'stars', url: '/admin/catalog/combos' },
         { name: 'Extras', icon: 'add_circle', url: '/admin/extras' },
-        { name: 'Queue', icon: 'list_alt_check', url: '/admin/request' },
-        { name: 'Users', icon: 'people', url: '/admin/users' },
+        { name: 'Cola', icon: 'list_alt_check', url: '/admin/request' },
+        { name: 'Usuarios', icon: 'people', url: '/admin/users' },
       ]
     }
   }

@@ -49,7 +49,7 @@ export class CatalogComponent implements OnInit, OnChanges {
 
   add: boolean = false; //false
   form: FormGroup;
-  action: string = 'add';
+  action: string = 'agregar';
   isNotSupply: boolean = false;
   actualStock: number = 0; //show the actual item stock
   stock: number = 0; //show the stock to be changed
@@ -277,12 +277,12 @@ export class CatalogComponent implements OnInit, OnChanges {
 
   addItem() {
     this.add = true;
-    this.action = 'add';
+    this.action = 'agregar';
   }
 
   editItem(item: any) {
     this.wip = true;
-    this.action = 'edit';
+    this.action = 'editar';
     this.add = true;
     this.item = item;
 
@@ -372,8 +372,7 @@ export class CatalogComponent implements OnInit, OnChanges {
       Swal.fire({
         icon: 'error',
         title: 'Oops...',
-        text: `The stock cannot be less than 0`,
-        footer: 'Please try again later'
+        text: `No puede ser menos de 0`,
       });
     } else {
       this.stock = this.stock - 1;
@@ -385,16 +384,14 @@ export class CatalogComponent implements OnInit, OnChanges {
       Swal.fire({
         icon: 'error',
         title: 'Oops...',
-        text: `The stock cannot be less than ${-this.actualStock}`,
-        footer: 'Please try again later'
+        text: `No puede ser menos de ${-this.actualStock}`,
       });
       this.stock = -this.actualStock; // Reajustar al valor mínimo permitido
     } else if (this.stock === 0) {
       Swal.fire({
         icon: 'error',
         title: 'Oops...',
-        text: 'The stock cannot be 0',
-        footer: 'Please try again later'
+        text: 'No puede ser 0',
       });
       this.stock = 1; // O establece un valor por defecto (por ejemplo, 1)
     }
@@ -412,7 +409,7 @@ export class CatalogComponent implements OnInit, OnChanges {
         Swal.fire({
           icon: 'error',
           title: 'Oops...',
-          text: 'You are offline, this action is not available',
+          text: 'Estas offline, no puedes agregar stock',
           footer: 'Please try again later'
         }).then(() => {
           this.wip = false;
@@ -439,7 +436,7 @@ export class CatalogComponent implements OnInit, OnChanges {
           Swal.fire({
             icon: 'error',
             title: 'Oops...',
-            text: `The stock cannot be 0`,
+            text: `El stock no puede ser 0`,
             footer: 'Please try again later'
           }).then(() => {
             this.wip = false;
@@ -451,10 +448,9 @@ export class CatalogComponent implements OnInit, OnChanges {
             Swal.fire({
               icon: 'success',
               title: 'Success',
-              text: data.message ?? 'The item has been added',
+              text: data.message ?? 'Se ah agregado el stock',
               timer: 3000,
               timerProgressBar: true,
-              footer: 'The item has been added'
             }).then(() => {
               this.closeStockChange();
             });
@@ -467,7 +463,7 @@ export class CatalogComponent implements OnInit, OnChanges {
       Swal.fire({
         icon: 'error',
         title: 'Oops...',
-        text: error.error.message ?? 'The item could not be added ',
+        text: error.error.message ?? 'no se pudo agregar el stock',
         footer: 'An error occurred'
       });
     }
@@ -501,17 +497,16 @@ export class CatalogComponent implements OnInit, OnChanges {
       if (this.form.valid) {
         const formData = this.consolidateFormData();
         switch (this.action) {
-          case 'add':
+          case 'agregar':
             const addData = await this.catalogService.setItems(this.title.toLowerCase(), formData);
             console.log(addData);
             if (addData) {
               Swal.fire({
                 icon: 'success',
                 title: 'Success',
-                text: addData.message ?? 'The item has been added',
+                text: addData.message ?? 'Se ha agregado el item',
                 timer: 3000,
                 timerProgressBar: true,
-                footer: 'The item has been added'
               }).then(() => {
                 this.wip = false;
                 this.updateItemList.emit(true);
@@ -520,7 +515,7 @@ export class CatalogComponent implements OnInit, OnChanges {
             }
             break;
 
-          case 'edit':
+          case 'editar':
             if (!this.form.get('haveStock')?.value) {
               this.form.get('price')?.setValue(0);
             }
@@ -529,10 +524,9 @@ export class CatalogComponent implements OnInit, OnChanges {
               Swal.fire({
                 icon: 'success',
                 title: 'Success',
-                text: editData.message ?? 'The item has been updated',
+                text: editData.message ?? 'Se ha actualizado el item',
                 timer: 3000,
                 timerProgressBar: true,
-                footer: 'The item has been updated'
               }).then(() => {
                 this.wip = false;
                 this.updateItemList.emit(true);
@@ -547,8 +541,8 @@ export class CatalogComponent implements OnInit, OnChanges {
         Swal.fire({
           icon: 'error',
           title: 'Oops...',
-          text: 'Please fill the required fields',
-          footer: 'Please try again'
+          text: 'Porfavor, llena todos los campos',
+          footer: 'Intentalo mas tarde'
         }).then(() => {
           this.wip = false;
         });
@@ -559,7 +553,7 @@ export class CatalogComponent implements OnInit, OnChanges {
       Swal.fire({
         icon: 'error',
         title: 'Oops...',
-        text: error.error.message ?? 'The item could not be added or modified',
+        text: error.error.message ?? 'El item no pudo ser procesado',
         footer: 'An error occurred'
       });
     }
@@ -569,12 +563,12 @@ export class CatalogComponent implements OnInit, OnChanges {
     try {
       this.wip = true;
       Swal.fire({
-        title: 'Are you sure?',
-        text: 'You will not be able to recover this item!',
+        title: '¿Estas seguro?',
+        text: 'Vas a eliminar este item',
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonText: 'Yes, delete it!',
-        cancelButtonText: 'No, keep it'
+        confirmButtonText: 'Si, eliminarlo',
+        cancelButtonText: 'No'
       }).then(async (result) => {
         if (result.isConfirmed) {
           const data = await this.catalogService.deleteItem(this.title.toLowerCase(), id);
@@ -582,10 +576,9 @@ export class CatalogComponent implements OnInit, OnChanges {
             Swal.fire({
               icon: 'success',
               title: 'Success',
-              text: data.message ?? 'The item has been deleted',
+              text: data.message ?? 'El item ha sido eliminado',
               timer: 3000,
               timerProgressBar: true,
-              footer: 'The item has been deleted'
             }).then(() => {
               this.updateItemList.emit(true);
               this.wip = false;
@@ -593,8 +586,7 @@ export class CatalogComponent implements OnInit, OnChanges {
           }
         } else if (result.dismiss === Swal.DismissReason.cancel) {
           Swal.fire(
-            'Cancelled',
-            'The item is safe :)',
+            'Cancelado',
             'error'
           ).then(() => {
             this.wip = false;
@@ -606,8 +598,7 @@ export class CatalogComponent implements OnInit, OnChanges {
       Swal.fire({
         icon: 'error',
         title: 'Oops...',
-        text: error.error.message ?? 'The item could not be deleted',
-        footer: 'An error occurred'
+        text: error.error.message ?? 'No se pudo eliminar el item',
       });
     }
   }

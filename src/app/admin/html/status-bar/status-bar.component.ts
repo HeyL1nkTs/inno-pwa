@@ -102,7 +102,7 @@ export class StatusBarComponent {
             Swal.fire({
               icon: 'success',
               title: 'Caja cerrada',
-              text: `Generaste $ ${this.current_amount} hoy! Buenas Noches :D`
+              text: `Generaste $ ${this.current_amount} hoy!`
             }).then(() => {
               this.closeCashier();
               this.status = false;
@@ -133,7 +133,7 @@ export class StatusBarComponent {
             this.getConnection();
             Swal.fire({
               icon: 'success',
-              title: 'Que tengas muy buen dia :D',
+              title: 'Bienvenido!',
             })
           })
         }

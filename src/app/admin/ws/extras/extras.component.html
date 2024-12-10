@@ -3,10 +3,10 @@
     <div class="header">
         <h1>Extras</h1>
         @if (showForm) {
-        <mat-icon class="close" appTooltip="Close form" placement="top" [delay]="200"
+        <mat-icon class="close" appTooltip="Cerrar" placement="top" [delay]="200"
             (click)="toggleForm()">close</mat-icon>
         } @else {
-        <mat-icon class="open" appTooltip="Add item" placement="top" [delay]="200" (click)="toggleForm()">add</mat-icon>
+        <mat-icon class="open" appTooltip="Agregar item" placement="top" [delay]="200" (click)="toggleForm()">add</mat-icon>
         }
     </div>
 
@@ -18,14 +18,14 @@
                     <!-- Contenedor para nombre y precio -->
                     <span class="details">
                         <div mat-line class="name">{{ extra.name }}</div>
-                        <div mat-line class="price">Price: {{ extra.price | currency }}</div>
+                        <div mat-line class="price">Precio: {{ extra.price | currency }}</div>
                     </span>
                     <!-- Contenedor para acciones -->
                     <div class="actions">
-                        <mat-icon appTooltip="Edit" placement="top" [delay]="200" (click)="editExtra(extra)">edit</mat-icon>
-                        <mat-icon appTooltip="Products associated" placement="top" [delay]="200"
+                        <mat-icon appTooltip="Editar" placement="top" [delay]="200" (click)="editExtra(extra)">edit</mat-icon>
+                        <mat-icon appTooltip="Productos relacionados" placement="top" [delay]="200"
                             (click)="showProducts(extra?.products)">visibility</mat-icon>
-                        <mat-icon appTooltip="Delete" placement="top" [delay]="200" (click)="deleteExtra(extra?._id)">delete</mat-icon>
+                        <mat-icon appTooltip="Eliminar" placement="top" [delay]="200" (click)="deleteExtra(extra?._id)">delete</mat-icon>
                     </div>
                 </div>
                 <hr>
@@ -37,12 +37,12 @@
     <div *ngIf="showForm" class="form-container">
         <form [formGroup]="extraForm" (ngSubmit)="submitForm()">
             <mat-form-field appearance="outline" class="form-field">
-                <mat-label>Name</mat-label>
+                <mat-label>Nombre</mat-label>
                 <input matInput formControlName="name" placeholder="Enter the extra name" />
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="form-field">
-                <mat-label>Price</mat-label>
+                <mat-label>Precio</mat-label>
                 <input matInput formControlName="price" type="number" placeholder="Enter the price" />
             </mat-form-field>
 
@@ -56,7 +56,7 @@
                     </mat-chip>
                 </mat-chip-set>
                 <button mat-button color="primary" type="button" (click)="openProductDialog()">
-                    Add Products
+                    Agregar Productos
                 </button>
             </div>
 
@@ -70,14 +70,14 @@
                         Add
                     </button>
                 }
-                <button mat-button color="warn" type="button" (click)="toggleForm()">Cancel</button>
+                <button mat-button color="warn" type="button" (click)="toggleForm()">Cancelar</button>
             </div>
         </form>
     </div>
 
     <!-- Dialog para selección de productos -->
     <ng-template #productDialog>
-        <h2 mat-dialog-title>Select Products</h2>
+        <h2 mat-dialog-title>Seleccionar Productos</h2>
         <mat-dialog-content class="dialog-content">
             <mat-selection-list [(ngModel)]="dialogSelectedProducts">
                 <mat-list-option *ngFor="let product of allProducts" [value]="product">
@@ -86,8 +86,8 @@
             </mat-selection-list>
         </mat-dialog-content>
         <mat-dialog-actions>
-            <button mat-button color="primary" type="button" (click)="addProducts()">Add</button>
-            <button mat-button mat-dialog-close (click)="resetSelected()">Close</button>
+            <button mat-button color="primary" type="button" (click)="addProducts()">Agregar</button>
+            <button mat-button mat-dialog-close (click)="resetSelected()">Cerrar</button>
         </mat-dialog-actions>
     </ng-template>
 

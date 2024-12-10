@@ -73,18 +73,18 @@
                     <h4>{{ item.name }}</h4>
                     <p class="price">${{ item.price }}</p>
                 </div>
-                <mat-icon appTooltip="Delete" placement="top" [delay]="200"
+                <mat-icon appTooltip="Eliminar" placement="top" [delay]="200"
                     (click)="removeFromCart(item.temporalId)">delete</mat-icon>
                 @if((item?.extrasRelacionados?.length || 0) > 0) {
                 <mat-icon appTooltip="Extras" placement="top" [delay]="200"
                     (click)="openExtrasSlider(item)">add</mat-icon>
                 }
                 @if( (item?.supplies?.length || 0) > 0) {
-                <mat-icon appTooltip="Personalize" placement="top" [delay]="200"
+                <mat-icon appTooltip="Personalizar" placement="top" [delay]="200"
                     (click)="openSupplySlider(item)">{{supplyExpander ? 'expand_less' : 'expand_more'}}</mat-icon>
                 }
                 @if( (item?.products?.length || 0) > 0) {
-                <mat-icon appTooltip="Personalize" placement="top" [delay]="200"
+                <mat-icon appTooltip="Personalizar" placement="top" [delay]="200"
                     (click)="openComboSlider(item)">{{supplyExpander ? 'expand_less' : 'expand_more'}}</mat-icon>
                 }
             </div>
@@ -94,7 +94,7 @@
             <div class="cart-expander">
                 <mat-expansion-panel>
                     <mat-expansion-panel-header>
-                        <mat-panel-title>Perzonalice</mat-panel-title>
+                        <mat-panel-title>Personalizar</mat-panel-title>
                     </mat-expansion-panel-header>
                     <div class="expander-content">
                         @for (supply of item.supplies; track supply) {
@@ -113,7 +113,7 @@
             <div class="cart-expander">
                 <mat-expansion-panel>
                     <mat-expansion-panel-header>
-                        <mat-panel-title>Add</mat-panel-title>
+                        <mat-panel-title>Agregar</mat-panel-title>
                     </mat-expansion-panel-header>
                     <div class="expander-content">
                         @for (extra of item.extrasRelacionados; track extra) {
@@ -132,7 +132,7 @@
             <div class="cart-expander">
                 <mat-expansion-panel>
                     <mat-expansion-panel-header>
-                        <mat-panel-title>Products</mat-panel-title>
+                        <mat-panel-title>Productos</mat-panel-title>
                     </mat-expansion-panel-header>
                     <div class="expander-content">
                         @for (product of item.products; track product) {
@@ -231,18 +231,18 @@
                     <h4>{{ item.name }}</h4>
                     <p class="price">${{ item.price }}</p>
                 </div>
-                <mat-icon appTooltip="Delete" placement="top" [delay]="200"
+                <mat-icon appTooltip="Eliminar" placement="top" [delay]="200"
                     (click)="removeFromCart(item.temporalId)">delete</mat-icon>
                 @if((item?.extrasRelacionados?.length || 0) > 0) {
                 <mat-icon appTooltip="Extras" placement="top" [delay]="200"
                     (click)="openExtrasSlider(item)">add</mat-icon>
                 }
                 @if( (item?.supplies?.length || 0) > 0) {
-                <mat-icon appTooltip="Personalize" placement="top" [delay]="200"
+                <mat-icon appTooltip="Personalizar" placement="top" [delay]="200"
                     (click)="openSupplySlider(item)">{{supplyExpander ? 'expand_less' : 'expand_more'}}</mat-icon>
                 }
                 @if( (item?.products?.length || 0) > 0) {
-                <mat-icon appTooltip="Personalize" placement="top" [delay]="200"
+                <mat-icon appTooltip="Personalizar" placement="top" [delay]="200"
                     (click)="openComboSlider(item)">{{supplyExpander ? 'expand_less' : 'expand_more'}}</mat-icon>
                 }
             </div>
@@ -252,7 +252,7 @@
             <div class="cart-expander">
                 <mat-expansion-panel>
                     <mat-expansion-panel-header>
-                        <mat-panel-title>Perzonalice</mat-panel-title>
+                        <mat-panel-title>Personalizar</mat-panel-title>
                     </mat-expansion-panel-header>
                     <div class="expander-content">
                         @for (supply of item.supplies; track supply) {
@@ -271,7 +271,7 @@
             <div class="cart-expander">
                 <mat-expansion-panel>
                     <mat-expansion-panel-header>
-                        <mat-panel-title>Add</mat-panel-title>
+                        <mat-panel-title>Agregar</mat-panel-title>
                     </mat-expansion-panel-header>
                     <div class="expander-content">
                         @for (extra of item.extrasRelacionados; track extra) {
@@ -290,7 +290,7 @@
             <div class="cart-expander">
                 <mat-expansion-panel>
                     <mat-expansion-panel-header>
-                        <mat-panel-title>Products</mat-panel-title>
+                        <mat-panel-title>Productos</mat-panel-title>
                     </mat-expansion-panel-header>
                     <div class="expander-content">
                         @for (product of item.products; track product) {
@@ -318,7 +318,7 @@
 <div class="overlay">
     <div class="payment-container">
         <span id="payment-option">
-            <h2>Payment Details</h2>
+            <h2>Detalles de pago</h2>
             <mat-icon class="close" (click)="cancelPayment()">close</mat-icon>
         </span>
 

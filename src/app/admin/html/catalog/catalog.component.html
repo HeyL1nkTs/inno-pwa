@@ -2,34 +2,34 @@
 
     @if(!add){
     <div class="option">
-        <mat-icon class="open" appTooltip="Add item" placement="top" [delay]="200" (click)="addItem()">add</mat-icon>
+        <mat-icon class="open" appTooltip="Agregar" placement="top" [delay]="200" (click)="addItem()">add</mat-icon>
     </div>
 
     <div class="grid">
         @if (items.length === 0) {
-        <p>There are no items, add one!</p>
+        <p>No hay items, agrega uno!</p>
         }
         @for (item of filteredItems; track item) {
         <div class="item">
             <img [src]="item.image_url" alt="">
             <div class="info">
                 <p>{{item.name}}</p>
-                <small>Price: $ {{item.price}} mxn / Stock: {{ item.stock }} u</small>
+                <small>Precio: $ {{item.price}} mxn / Stock: {{ item.stock }} u</small>
             </div>
             <div class="options">
                 @if (item.supplies) {
-                <mat-icon appTooltip="Include" placement="top" [delay]="200"
+                <mat-icon appTooltip="Incluye" placement="top" [delay]="200"
                     (click)="showReceipt(item.supplies)">receipt_long</mat-icon>
                 }
                 @if (item.products) {
-                <mat-icon appTooltip="Include" placement="top" [delay]="200"
+                <mat-icon appTooltip="Incluye" placement="top" [delay]="200"
                     (click)="showReceipt(item.products)">receipt_long</mat-icon>
                 }
                 @if(item.haveStock) {
-                <mat-icon appTooltip="Add stock" placement="top" [delay]="200" (click)="findStock(item)">add</mat-icon>
+                <mat-icon appTooltip="Agregar stock" placement="top" [delay]="200" (click)="findStock(item)">add</mat-icon>
                 }
-                <mat-icon appTooltip="Edit" placement="top" [delay]="200" (click)="editItem(item)">edit</mat-icon>
-                <mat-icon appTooltip="Delete" placement="top" [delay]="200"
+                <mat-icon appTooltip="Editar" placement="top" [delay]="200" (click)="editItem(item)">edit</mat-icon>
+                <mat-icon appTooltip="Eliminar" placement="top" [delay]="200"
                     (click)="deleteItem(item._id)">delete</mat-icon>
             </div>
         </div>
@@ -42,31 +42,31 @@
         <mat-icon class="close" appTooltip="Cerrar" placement="top" [delay]="200" (click)="closeItem()">close</mat-icon>
     </div>
     <div class="form-container">
-        <h3>{{action.toLocaleUpperCase()}} {{title}}</h3>
+        <h3>{{action.toLocaleUpperCase()}} {{title.toLocaleUpperCase()}}</h3>
         <form [formGroup]="form" (ngSubmit)="process()">
             <mat-form-field appearance="outline" class="question">
-                <mat-label>Name</mat-label>
+                <mat-label>Nombre</mat-label>
                 <input matInput placeholder="Write name" formControlName="name" required>
                 @if (form.get('name')?.hasError('required')) {
-                <mat-error>Is required</mat-error>
+                <mat-error>Es requerido</mat-error>
                 }
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="question">
-                <mat-label>Will have stock?</mat-label>
+                <mat-label>¿Tendra Stock?</mat-label>
                 <mat-select formControlName="haveStock" (selectionChange)="onHaveStockChange($event)">
                     <mat-option>None</mat-option>
-                    <mat-option [value]="true">Yes</mat-option>
+                    <mat-option [value]="true">Si</mat-option>
                     <mat-option [value]="false">No</mat-option>
                 </mat-select>
                 @if (form.get('haveStock')?.hasError('required')) {
-                <mat-error>Is required</mat-error>
+                <mat-error>Es requerido</mat-error>
                 }
             </mat-form-field>
 
             @if((isNotSupply)) {
             <mat-form-field appearance="outline" class="question">
-                <mat-label>Price</mat-label>
+                <mat-label>Precio</mat-label>
                 <input matInput placeholder="Set a price" formControlName="price">
                 <mat-icon matSuffix>attach_money</mat-icon>
             </mat-form-field>
@@ -75,20 +75,20 @@
             <!-- HTML para Combos con campo de descuento para cada producto añadido -->
             @if(title.toLowerCase() === 'combos'){
             <button class="open btn-extras btn-products" type="button" (click)="openAddProductModal()"
-                [disabled]="!(enableActions$ | async)" appTooltip="Only with connection" placement="top"
-                [delay]="200">Add products</button>
+                [disabled]="!(enableActions$ | async)" appTooltip="Solo con internet" placement="top"
+                [delay]="200">Agregar Productos</button>
 
             <!-- Mostrar el FormArray de comboProducts -->
             <div formArrayName="products" class="products-container">
                 @for (product of products.controls; track product; let i = $index) {
                 <div [formGroupName]="i" class="product-item">
                     <div class="product-info">
-                        <span>Product: {{ product.get('name').value }}</span>
+                        <span>Producto: {{ product.get('name').value }}</span>
                         <!--<input type="number" min="0" max="100" formControlName="discount" appTooltip="Discount (%)"
                             placement="top" [delay]="200" />-->
                     </div>
                     <button type="button" class="open btn-extras btn-products"
-                        (click)="removeComboProduct(product.value)">Remove</button>
+                        (click)="removeComboProduct(product.value)">Remover</button>
                 </div>
                 }
             </div>
@@ -97,47 +97,47 @@
 
             @if(title.toLowerCase() === 'products'){
             <button class="open btn-extras btn-supplies" type="button" (click)="openAddSupplyModal()"
-                [disabled]="!(enableActions$ | async)" appTooltip="Only with connection" placement="top"
-                [delay]="200">Add supplies</button>
+                [disabled]="!(enableActions$ | async)" appTooltip="Solo con internet" placement="top"
+                [delay]="200">Agregar suministros</button>
 
             <!-- Mostrar el FormArray de supplies -->
             <div formArrayName="supplies" class="supplies-container">
                 @for (supply of supplies.controls; track supply; let i = $index) {
                 <div [formGroupName]="i" class="supply-item">
                     <div class="supply-info">
-                        <span>Name: {{ supply.get('name').value }}</span>
-                        <input type="number" min="1" formControlName="required" appTooltip="Required quantity"
+                        <span>Suministro: {{ supply.get('name').value }}</span>
+                        <input type="number" min="1" formControlName="required" appTooltip="Cantidad requerida"
                             placement="top" [delay]="200" />
                     </div>
                     <button type="button" class="open btn-extras btn-supplies"
-                        (click)="removeSupply(supply.value)">Remove</button>
+                        (click)="removeSupply(supply.value)">Remover</button>
                 </div>
                 }
             </div>
             }
 
             <div class="file-sel">
-                <mat-label>Choose an image</mat-label>
+                <mat-label>Elige una imagen</mat-label>
                 <!-- Botón que simula el clic en el input oculto -->
                 <button type="button" class="image-button" (click)="fileInput.click()">
                     <mat-icon>add_a_photo</mat-icon>
-                    Select an image
+                    Seleccionar
                 </button>
                 <!-- Input de tipo file oculto -->
                 <input type="file" #fileInput accept="image/*" (change)="onFileSelected($event)" hidden />
                 @if(selectedImageName) {
                 <small>Imagen seleccionada: {{ selectedImageName }}</small>
                 } @else if(editedImage !== '') {
-                <small>Actual Image</small>
+                <small>Imagen Actual</small>
                 <img class="rec" [src]="editedImage" alt="">
                 }
             </div>
 
             @switch (action) {
-            @case ('add') {
+            @case ('agregar') {
             <button class="btn-add" type="submit">Crear</button>
             }
-            @case ('edit') {
+            @case ('editar') {
             <button class="btn-add" type="submit">Editar</button>
             }
             }
@@ -146,7 +146,7 @@
             <div class="add-supplies-wrapper">
                 <div class="add-supplies-container" [@scaleAnimation]="addSupplyState">
                     <div class="modal-content">
-                        <h3>Select Supplies</h3>
+                        <h3>Seleccionar suministros</h3>
                         <div class="checklist">
                             @for (supply of suppliesList; track supply) {
                             <mat-checkbox (change)="onSupplySelected(supply, $event)"
@@ -156,7 +156,7 @@
                             }
                         </div>
                         <button mat-raised-button class="open btn-extras btn-supplies" type="button"
-                            (click)="closeAddSupplyModal()">Close</button>
+                            (click)="closeAddSupplyModal()">Cerrar</button>
                     </div>
                 </div>
             </div>
@@ -166,7 +166,7 @@
             <div class="add-products-wrapper">
                 <div class="add-products-container" [@scaleAnimation]="addProductState">
                     <div class="modal-content">
-                        <h3>Select Products</h3>
+                        <h3>Seleccionar Productos</h3>
                         <div class="checklist">
                             <!-- Lista de productos con checkbox para seleccionarlos -->
                             @for (product of productsList; track product) {
@@ -181,7 +181,7 @@
                         </div>
                         <!-- Botón para cerrar el modal -->
                         <button mat-raised-button class="open btn-extras btn-products" type="button"
-                            (click)="closeAddProductModal()">Close</button>
+                            (click)="closeAddProductModal()">Cerrar</button>
                     </div>
                 </div>
             </div>
@@ -203,11 +203,11 @@
             <div class="counter-wrapper">
                 <h4>Stock Actual: {{actualStock}}</h4>
                 <div class="counter">
-                    <mat-icon class="btn-extras" (click)="increaseStock()" appTooltip="Add stock" placement="top"
+                    <mat-icon class="btn-extras" (click)="increaseStock()" appTooltip="Agregar stock" placement="top"
                         [delay]="200">add</mat-icon>
                     <input type="number" [(ngModel)]="stock" class="stock-input" (blur)="validateStock()"
                         [min]="-actualStock" />
-                    <mat-icon class="btn-extras" (click)="decreaseStock()" appTooltip="Remove stock" placement="top"
+                    <mat-icon class="btn-extras" (click)="decreaseStock()" appTooltip="Remover stock" placement="top"
                         [delay]="200">remove</mat-icon>
                 </div>
                 <button class="open" type="button" (click)="addStock()">Modificar Stock</button>
