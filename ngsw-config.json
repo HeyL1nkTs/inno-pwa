@@ -31,7 +31,7 @@
     {
       "name": "api",
       "urls": [
-        "http;//localhost:3032/**"
+        "https://inno-api-42r5.onrender.com/*"
       ],
       "cacheConfig": {
         "strategy": "freshness",
