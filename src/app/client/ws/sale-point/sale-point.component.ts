@@ -36,51 +36,6 @@ export class SalePointComponent {
   extrasExpander: ItemSelection[] = [];
   actualOrder: any;
 
-  selectedTesting: any = {
-    "id": "674a5581d9b05d57388eed6c",
-    "name": "Hamburger",
-    "price": 150,
-    "image_url": "",
-    "extrasRelacionados": [],
-    "supplies": [
-      {
-        "_id": "674a5349d9b05d57388eed35",
-        "name": "Catsup",
-        "price": 0
-      },
-      {
-        "_id": "674a5456d9b05d57388eed41",
-        "name": "Pan Hambugesa",
-        "price": 0
-      },
-      {
-        "_id": "674a549bd9b05d57388eed45",
-        "name": "Carne Hamburgesa",
-        "price": 2
-      },
-      {
-        "_id": "674a551fd9b05d57388eed5d",
-        "name": "Mayo",
-        "price": 0
-      },
-      {
-        "_id": "674a552ed9b05d57388eed60",
-        "name": "Lettuce",
-        "price": 0
-      },
-      {
-        "_id": "674a553ed9b05d57388eed63",
-        "name": "Tomatoe(Slice)",
-        "price": 0
-      },
-      {
-        "_id": "674a554cd9b05d57388eed66",
-        "name": "Onion(Slice)",
-        "price": 0
-      }
-    ]
-  }
-
   cart: any[] = [];
   cartPersonalization: any[] = [];
   filteredProducts: any[] = [];
@@ -98,6 +53,8 @@ export class SalePointComponent {
   change: number = 0; // Change to be returned
   showDetails: boolean = false; // Show payment details
   paymentProcess: boolean = false; // Payment process status
+
+  wip: boolean = false;
 
   @HostListener('window:resize', [])
   onResize() {
@@ -139,6 +96,7 @@ export class SalePointComponent {
   }
 
   async getData() {
+    this.wip = true;
     let data;
     if (this.cartType === 'products') {
       data = await this.sale.getProducts();
@@ -151,6 +109,7 @@ export class SalePointComponent {
       product.quantity = 0;
     });
     this.filteredProducts = [...this.products];
+    this.wip = false;
   }
 
   filterProducts(event: any) {
@@ -537,7 +496,7 @@ export class SalePointComponent {
   async endOrder() {
     //process to back
     try {
-
+      this.wip = true;
       const finalOrder = {
         orders: this.actualOrder,
         paymentInfo: {
@@ -560,6 +519,7 @@ export class SalePointComponent {
           icon: 'success',
           confirmButtonText: 'Ok'
         }).then(() => {
+          this.wip = false;
           this.resetComponent();
           this.getData();
         });
@@ -571,6 +531,8 @@ export class SalePointComponent {
         icon: 'error',
         text: error.error.message ?? 'Error desconocido',
         confirmButtonText: 'Ok'
+      }).then(()=>{
+        this.wip = false;
       });
     }
   }
