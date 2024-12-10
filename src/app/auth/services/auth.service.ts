@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../environment/environment';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -47,5 +48,9 @@ export class AuthService {
    */
   clearToken(): void {
     localStorage.removeItem(this.tokenKey);
+  }
+
+  logout(id: number) {
+    return firstValueFrom(this.http.delete(this.url + this.module + '/logout/' + id));
   }
 }

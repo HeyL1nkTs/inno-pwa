@@ -20,22 +20,24 @@ import { JwtService } from '../../../generalServices/jwt.service';
     PopComponent, MatFormFieldModule,
     MatInputModule, MatSelectModule,
     ReactiveFormsModule, FormsModule,
-    MatCheckbox, LoadingComponent],
+    MatCheckbox, LoadingComponent, LoadingComponent],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
 export class LoginComponent {
 
   form: FormGroup;
+  wip: boolean = false;
 
   constructor(private fb: FormBuilder, private auth: AuthService, private router: Router, private jwt: JwtService) {
     this.form = this.fb.group({
-      name: ['', Validators.required],
+      username: ['', Validators.required],
       password: ['', Validators.required]
     });
   }
 
   process() {
+    this.wip = true;
     if (this.form.valid) {
       this.auth.login(this.form.value).subscribe((res: any) => {
         this.auth.saveToken(res.token);
@@ -50,21 +52,27 @@ export class LoginComponent {
             icon: 'error',
             title: 'Oops...',
             text: 'Invalid user role!',
-          })
+          }).then(() => {
+            this.wip = false;
+          });
         }
       }, (error) => {
         Swal.fire({
           icon: 'error',
           title: 'Oops...',
           text: error.error.message,
-        })
+        }).then(() => {
+          this.wip = false;
+        });
       });
     } else {
       Swal.fire({
         icon: 'error',
         title: 'Oops...',
         text: 'Please check the fields!',
-      })
+      }).then(() => {
+        this.wip = false;
+      });
     }
   }
 

@@ -5,15 +5,15 @@
     <div class="form-wrapper">
         <form [formGroup]="form" (ngSubmit)="process()">
             <mat-form-field appearance="outline" class="question">
-                <mat-label>Name</mat-label>
-                <input matInput placeholder="Write name" formControlName="name" required>
+                <mat-label>Usuario</mat-label>
+                <input matInput placeholder="Write name" formControlName="username" required>
                 @if (form.get('name')?.hasError('required')) {
                 <mat-error>Is required</mat-error>
                 }
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="question">
-                <mat-label>Password</mat-label>
+                <mat-label>Contraseña</mat-label>
                 <input matInput placeholder="Write password" type="password" formControlName="password" required>
                 @if (form.get('password')?.hasError('required')) {
                 <mat-error>Is required</mat-error>
@@ -24,3 +24,7 @@
         </form>
     </div>
 </div>
+
+@if(wip){
+    <app-loading></app-loading>
+}

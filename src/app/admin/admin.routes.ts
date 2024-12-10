@@ -5,6 +5,7 @@ import { CatalogSelectorComponent } from './ws/catalog-selector/catalog-selector
 import { ProfileComponent } from './ws/profile/profile.component';
 import { QueueComponent } from './ws/queue/queue.component';
 import { ExtrasComponent } from './ws/extras/extras.component';
+import { UsersComponent } from './ws/users/users.component';
 
 export const routes: Routes = [
     {
@@ -14,7 +15,8 @@ export const routes: Routes = [
             { path: 'catalog/:selector', component: CatalogSelectorComponent },
             { path: 'profile', component: ProfileComponent },
             { path: 'request', component: QueueComponent },
-            { path: 'extras', component: ExtrasComponent }
+            { path: 'extras', component: ExtrasComponent },
+            { path: 'users', component: UsersComponent },
         ]
     },
 ];

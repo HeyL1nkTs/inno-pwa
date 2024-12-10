@@ -1,0 +1,90 @@
+<div class="container">
+    @if(!showForm){
+    <h3>Usuarios</h3>
+    <mat-icon id="icon" class="open" appTooltip="Agregar Usuario" placement="top" [delay]="200"
+        (click)="toggleForm()">add</mat-icon>
+    <table mat-table [dataSource]="users" class="mat-elevation-z8">
+        <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef>Nombre</th>
+            <td mat-cell *matCellDef="let user">{{ user.name }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="username">
+            <th mat-header-cell *matHeaderCellDef>Usuario</th>
+            <td mat-cell *matCellDef="let user">{{ user.username }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="email">
+            <th mat-header-cell *matHeaderCellDef>Correo electronico</th>
+            <td mat-cell *matCellDef="let user">{{ user.email }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="phone">
+            <th mat-header-cell *matHeaderCellDef>Telefono</th>
+            <td mat-cell *matCellDef="let user">{{ user.phone }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>Acciones</th>
+            <td mat-cell *matCellDef="let user">
+                <button mat-icon-button color="primary" (click)="editUser(user)">
+                    <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-icon-button color="warn" (click)="deleteUser(user)">
+                    <mat-icon>delete</mat-icon>
+                </button>
+            </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+    }@else{
+    <h2>{{ isEditing ? 'Editar Usuario' : 'Agregar Usuario' }}</h2>
+    <mat-icon id="icon" class="close" (click)="toggleForm()">close</mat-icon>
+    <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+        <mat-form-field appearance="outline">
+            <mat-label>Nombre</mat-label>
+            <input matInput formControlName="name" placeholder="Enter name" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+            <mat-label>Usuario</mat-label>
+            <input matInput formControlName="username" placeholder="Enter username" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+            <mat-label>Contraseña</mat-label>
+            <input matInput type="password" formControlName="password" placeholder="Enter password" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+            <mat-label>Teléfono</mat-label>
+            <input matInput type="tel" formControlName="phone" placeholder="Enter phone" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+            <mat-label>Correo electrónico</mat-label>
+            <input matInput type="email" formControlName="email" placeholder="Enter email" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+            <mat-label>Rol</mat-label>
+            <mat-select formControlName="role">
+                <mat-option value="admin">Administrador</mat-option>
+                <mat-option value="seller">Vendedor</mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <div class="actions">
+            <button mat-raised-button color="primary" type="submit" [disabled]="userForm.invalid">
+                {{ isEditing ? 'Actualizar' : 'Agregar' }}
+            </button>
+        </div>
+    </form>
+    }
+</div>
+
+@if(wip){
+    <app-loading></app-loading>
+}
