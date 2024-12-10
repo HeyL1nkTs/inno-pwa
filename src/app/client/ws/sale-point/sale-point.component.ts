@@ -13,6 +13,7 @@ import { CommonModule } from '@angular/common';
 import { MobileService } from '../../../generalServices/mobile.service';
 import { MatSelectModule } from '@angular/material/select';
 import { JwtService } from '../../../generalServices/jwt.service';
+import { LoadingComponent } from '../../../generalServices/loading/loading.component';
 
 interface ItemSelection {
   id: string;
@@ -25,7 +26,7 @@ interface ItemSelection {
   imports: [MatIconModule, MatFormFieldModule, FormsModule,
     ReactiveFormsModule, MatInputModule, TooltipDirective,
     MatExpansionModule, MatCheckboxModule, CommonModule,
-    MatSelectModule],
+    MatSelectModule, LoadingComponent],
   templateUrl: './sale-point.component.html',
   styleUrl: './sale-point.component.css'
 })
