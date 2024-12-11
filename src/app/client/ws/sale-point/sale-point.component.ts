@@ -262,12 +262,26 @@ export class SalePointComponent {
   }
 
   increaseQuantity(product: any) {
-    product.quantity++;
+    if (product.quantity < product.stock) {
+      product.quantity++;
+    }else{
+      Swal.fire({
+        title: 'No hay suficiente stock',
+        icon: 'error',
+        confirmButtonText: 'Ok'
+      });
+    }
   }
 
   decreaseQuantity(product: any) {
-    if (product.quantity > 1) {
+    if (product.quantity > 0) {
       product.quantity--;
+    }else{
+      Swal.fire({
+        title: 'La cantidad no puede ser menor a 0',
+        icon: 'error',
+        confirmButtonText: 'Ok'
+      });
     }
   }
 

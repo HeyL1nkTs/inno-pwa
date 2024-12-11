@@ -8,6 +8,7 @@ import { MobileService } from '../../../generalServices/mobile.service';
 import { CashierService } from '../../services/cashier.service';
 import { InternetService } from '../../services/internet.service';
 import { SocketService } from '../../../generalServices/socket.service';
+import { JwtService } from '../../../generalServices/jwt.service';
 
 @Component({
   selector: 'app-status-bar',
@@ -26,52 +27,50 @@ export class StatusBarComponent {
   preventReload: boolean = false; //updates socket conn
   @Output() openMenu = new EventEmitter<boolean>();
 
-  //TODO Delete the following line
   cardData: any = [];
 
 
   constructor(private mobileService: MobileService,
     private cashier: CashierService,
     private connection: InternetService,
-    private socket: SocketService) { }
+    private socket: SocketService,
+    private jwt: JwtService) { }
 
-  ngOnInit() {
-    Cookies.get('status') === 'true' ? this.status = true : this.status = false;
-    if (localStorage.getItem('orders')) {
-      this.cardData = JSON.parse(localStorage.getItem('orders'));
-      this.sortOrders();
-      this.updateCurrentAmmount();
-    }
-    if (localStorage.getItem('isConnected') === '1') {
-      this.preventReload = true;
-      localStorage.removeItem('isConnected');
-    }
-    const cashier = Cookies.get('cashier');
-    if (cashier) {
-      this.cashier_id = JSON.parse(cashier)._id;
-      this.initial_amount = JSON.parse(cashier).initial_amount;
-    }
+  async ngOnInit() {
 
-    if (this.preventReload) {
-      this.getConnection();
+    this.socket.connect(); // Conectar al servidor de Socket.IO
+    /*
+      Check if there is a cashier open, if there is, set the status to true
+    */
+    const cashier = await this.getActualCashier();
+    if (cashier.cashierStatus === 'open') {
+      console.log('Caja abierta', cashier);
+      this.openCashier(cashier);
+      Swal.fire({
+        icon: 'success',
+        title: 'Se encontro una caja abierta'
+      });
+    } else { //si esta cerrada me suscribo al evento de caja abierta
+      this.listenOpenCashier();
     }
+  }
+
+  async getActualCashier() {
+    const cashier = await this.cashier.checkCashierStatus();
+    return cashier;
   }
 
   getConnection() {
-    localStorage.setItem('isConnected', '1');
-    this.socket.connect();
-    this.socket.listenForPaymentInfo().subscribe((order) => {
-      order.date = this.formatDate(new Date(order.date));
-      this.cardData.push(order);
-      this.sortOrders();
-      this.reloadPrevention();
-      this.updateCurrentAmmount();
+    this.socket.listenForPaymentInfo().subscribe((data) => {
+      if (data) {
+        const order = data.paymentInfo;
+        const currentTotal = data.currentAmount;
+        this.current_amount = currentTotal;
+        order.date = this.formatDate(new Date(order.date));
+        this.cardData.push(order);
+        this.cardData = this.consolidateOrders();
+      }
     });
-  }
-
-  reloadPrevention() {
-    localStorage.removeItem('orders');
-    localStorage.setItem('orders', JSON.stringify(this.cardData));
   }
 
   statusDay() {
@@ -88,7 +87,7 @@ export class StatusBarComponent {
       Swal.fire({
         icon: 'warning',
         title: 'Cerraras la venta del día',
-        text: 'Esto cerrara la caja y no podras seguir vendiendo, se cerraraan las cuentas vendedor',
+        text: 'Esto cerrara la caja y no podras seguir vendiendo, se cerraran las cuentas vendedor',
         confirmButtonColor: 'green',
         confirmButtonText: 'Close',
         showCancelButton: true,
@@ -97,16 +96,12 @@ export class StatusBarComponent {
       }).then((response) => {
         if (response.isConfirmed) {
           this.cashier.closeCashier(this.cashier_id).subscribe((res) => {
-            Cookies.set('status', 'false');
-            Cookies.remove('cashier');
             Swal.fire({
               icon: 'success',
               title: 'Caja cerrada',
               text: `Generaste $ ${this.current_amount} hoy!`
             }).then(() => {
-              this.closeCashier();
-              this.status = false;
-              this.cashier_id = null;
+              this.closeCashierData();
             })
           })
         }
@@ -126,14 +121,11 @@ export class StatusBarComponent {
             status: 'open',
           };
           this.cashier.openCashier(JSON.stringify(dbStatus)).subscribe((res) => {
-            Cookies.set('status', 'true');
-            Cookies.set('cashier', JSON.stringify(res));
-            this.status = true;
-            this.cashier_id = res._id;
-            this.getConnection();
             Swal.fire({
               icon: 'success',
               title: 'Bienvenido!',
+            }).then(() => {
+              this.openCashier(res);
             })
           })
         }
@@ -141,17 +133,46 @@ export class StatusBarComponent {
     }
   }
 
-  updateCurrentAmmount() {
-    this.cardData.forEach(order => {
-      this.current_amount += order.total
+  openCashier(data) { //al iniciar la app
+    this.status = true; //la caja esta abierta
+    this.cashier_id = data.cashierId; //guardo el id de la caja
+    this.current_amount = data.current_amount; //guardo el monto actual
+    this.getConnection(); //me suscribo a las ordenes
+    this.listenCloseCashier(); //me suscribo al evento de cierre de caja por algun otro admin
+  }
+
+  closeCashierData() {
+    this.cashier_id = null;
+    this.status = false;
+    this.current_amount = 0;
+    this.cardData = [];
+  }
+
+  listenOpenCashier() {
+    this.socket.onOpenCashier().subscribe((data: any) => {
+      if (data) {
+        Swal.fire({
+          icon: 'info',
+          title: 'Caja abierta por otro admin',
+        }).then(() =>{
+          this.openCashier(data);
+        })
+      }
     });
   }
 
-  closeCashier() {
-    this.current_amount = 0;
-    this.cardData = [];
-    localStorage.removeItem('orders');
-    this.socket.endConnection();
+  listenCloseCashier() {
+    this.socket.onCloseCashier().subscribe((shouldClose: boolean) => {
+      if (shouldClose) {
+        Swal.fire({
+          icon: 'info',
+          title: 'Caja cerrada por otro admin',
+          text: 'Hoy generaste $' + this.current_amount
+        }).then(()=>{
+          this.closeCashierData(); // Lógica para manejar el cierre de la caja
+        })
+      }
+    });
   }
 
   /**
@@ -184,16 +205,12 @@ export class StatusBarComponent {
     }
   }
 
-  /**
-  * Ordena las órdenes en el array, colocando la más reciente arriba y elimina ordenes con id iguales
-  */
-  sortOrders(): void {
-    this.cardData.sort((a, b) => {
-      const dateA = new Date(a.date).getTime(); // Usar objeto Date para comparación
-      const dateB = new Date(b.date).getTime(); // Usar objeto Date para comparación
-      return dateB - dateA; // Ordenar de más reciente a más antiguo
-    });
+  consolidateOrders(){
+    const consolidatedOrders = _.uniqBy(this.cardData, 'orderNumber');
+    return consolidatedOrders;
+  }
 
-    this.cardData = _.uniqBy(this.cardData, 'orderNumber');
+  ngOnDestroy() {
+    this.socket.endConnection();
   }
 }

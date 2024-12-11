@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { firstValueFrom, Observable } from 'rxjs';
 import { environment } from '../../environment/environment';
 
 @Injectable({
@@ -23,5 +23,9 @@ export class CashierService {
 
   closeCashier(id: number): Observable<any> {
     return this.http.delete<any>(this.url + this.module + '/close/' + id);
+  }
+
+  checkCashierStatus() {
+    return firstValueFrom(this.http.get<any>(this.url + this.module + '/exist'));
   }
 }

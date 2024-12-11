@@ -11,7 +11,7 @@ export class SocketService {
 
   constructor() {
     // Conectar al servidor de Socket.IO
-    this.socket = io(environment.socket);
+    this.socket = io(environment.socket, { transports: ['websocket', 'polling', 'flashsocket'] });
   }
 
   /**
@@ -48,6 +48,37 @@ export class SocketService {
 
       return () => {
         this.socket.off('closeSession');
+      };
+    });
+  }
+
+  /**
+   * @description Listen to other admins to end cashier
+   */
+  onCloseCashier(): Observable<boolean> {
+    return new Observable<boolean>((observer) => {
+      console.log('Listening for closeCashier');
+      this.socket.off('closeCashier');
+      this.socket.on('closeCashier', (data: boolean) => {
+        observer.next(data);
+      });
+
+      return () => {
+        this.socket.off('closeCashier');
+      };
+    });
+  }
+
+  onOpenCashier(): Observable<any> {
+    return new Observable<any>((observer) => {
+      console.log('Listening for openCashier');
+      this.socket.off('openCashier');
+      this.socket.on('openCashier', (data) => {
+        observer.next(data);
+      });
+
+      return () => {
+        this.socket.off('openCashier');
       };
     });
   }
