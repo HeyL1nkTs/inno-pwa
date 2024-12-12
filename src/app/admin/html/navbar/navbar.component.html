@@ -13,12 +13,16 @@
 
         <div class="options" id="opc">
             @if(isAdmin){
-                <a href="/auth/logout">Logout</a>
+                <a id="logout" (click)="logoutProcess()">Logout</a>
                 <a href="/admin/profile">Manage profile</a>
             } @else {
-                <a href="/auth/logout">Logout</a>
+                <a id="logout" (click)="logoutProcess()">Logout</a>
                 <a href="/client/profile">Manage profile</a>
             }
         </div>
     </div>
 </nav>
+
+@if(wip){
+    <app-loading></app-loading>
+}

@@ -48,4 +48,20 @@ export class JwtService {
     const token = localStorage.getItem('token');
     return this.getPayload(token);
   }
+
+  checkRoleInToken() {
+    const token = localStorage.getItem('token');
+    const payload = this.getPayload(token);
+    const role = payload.role;
+    return role;
+  }
+
+  isAuthenticated() {
+    const token = localStorage.getItem('token');
+    if(token){
+      return true;
+    }else{
+      return false;
+    }
+  }
 }

@@ -15,35 +15,37 @@ import { LoadingComponent } from '../../../generalServices/loading/loading.compo
 })
 export class LogoutComponent implements OnInit {
 
-  constructor(private router: Router, private jwt: JwtService, private authService: AuthService) { }
+  constructor(private router: Router, private jwt: JwtService) { }
 
-  ngOnInit() {
-    this.closeSession();
+  async ngOnInit() {
+    await this.closeSession();
   }
 
   async closeSession() {
     try {
-
-      if (navigator.onLine) {
-        const user = this.jwt.getPayload(localStorage.getItem('token'));
-        const response = await this.authService.logout(user);
-        if (response) {
-          localStorage.removeItem('token');
-          localStorage.removeItem('isConnected');
-          localStorage.removeItem('orders');
-          localStorage.removeItem('cashier');
-          Cookies.remove('cashier');
-          Cookies.remove('status');
+      console.log('cerrada la sesion');
+      localStorage.removeItem('token');
+      localStorage.removeItem('isConnected');
+      localStorage.removeItem('orders');
+      localStorage.removeItem('cashier');
+      Cookies.remove('cashier');
+      Cookies.remove('status');
+      setTimeout(() => {
+        Swal.fire({
+          icon: 'success',
+          title: 'Sesión cerrada',
+          text: 'Hasta luego!'
+        }).then(() => {
           this.router.navigate(['/auth']);
-        }
-      }
+        })
+      })
     } catch (error) {
       console.error(error);
       Swal.fire({
         icon: 'error',
         title: 'Oops...',
         text: 'No se pudo cerrar session'
-      }).then(()=>{
+      }).then(() => {
         this.router.navigate(['/']);
       });
     }

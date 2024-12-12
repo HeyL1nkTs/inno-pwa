@@ -2,11 +2,15 @@ import { Component } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MobileService } from '../../../generalServices/mobile.service';
 import { JwtService } from '../../../generalServices/jwt.service';
+import { Router } from '@angular/router';
+import Swal from 'sweetalert2';
+import { AuthService } from '../../../auth/services/auth.service';
+import { LoadingComponent } from '../../../generalServices/loading/loading.component';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [MatIconModule],
+  imports: [MatIconModule, LoadingComponent],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css'
 })
@@ -18,8 +22,10 @@ export class NavbarComponent {
   isMenuOpen: boolean = false;
   user: any;
   isAdmin: boolean = false;
+  wip: boolean = false;
 
-  constructor(private movileService: MobileService, private jwt: JwtService) {
+  constructor(private movileService: MobileService, private jwt: JwtService, 
+    private router: Router, private authService: AuthService) {
     setInterval(() => {
       this.updateDateTime();
     }, 1000);
@@ -88,6 +94,25 @@ export class NavbarComponent {
         menu.classList.add('open-menu');
         this.isMenuOpen = true;
       }
+    }
+  }
+
+  async logoutProcess(){
+    this.wip = true;
+    if(this.jwt.isAuthenticated() && navigator.onLine){
+      const user = this.jwt.getPayload(localStorage.getItem('token'));
+      await this.authService.logout(user);
+      localStorage.removeItem('token');
+      this.wip = false;
+      this.router.navigate(['/auth/logout']);
+    } else{
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Consulta a un administrador'
+      }).then(() => {
+        this.wip = false;
+      });
     }
   }
 }

@@ -81,6 +81,10 @@ a:hover {
     pointer-events: all;
 }
 
+#logout {
+    cursor: pointer;
+}
+
 @media only screen and (min-width: 3440px) {}
 
 @media only screen and (min-width: 2560px) and (max-width: 3439px) {}

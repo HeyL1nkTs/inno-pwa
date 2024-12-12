@@ -6,21 +6,21 @@
         <form [formGroup]="form" (ngSubmit)="process()">
             <mat-form-field appearance="outline" class="question">
                 <mat-label>Usuario</mat-label>
-                <input matInput placeholder="Write name" formControlName="username" required>
+                <input matInput placeholder="Escribe tu usuario" formControlName="username" required>
                 @if (form.get('name')?.hasError('required')) {
-                <mat-error>Is required</mat-error>
+                <mat-error>Es requerido</mat-error>
                 }
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="question">
                 <mat-label>Contraseña</mat-label>
-                <input matInput placeholder="Write password" type="password" formControlName="password" required>
+                <input matInput placeholder="Escribe tu contraseña" type="password" formControlName="password" required>
                 @if (form.get('password')?.hasError('required')) {
-                <mat-error>Is required</mat-error>
+                <mat-error>Es requerido</mat-error>
                 }
             </mat-form-field>
 
-            <button class="btn-add" type="submit">Login</button>
+            <button class="btn-add" type="submit">Iniciar Sesión</button>
         </form>
     </div>
 </div>
