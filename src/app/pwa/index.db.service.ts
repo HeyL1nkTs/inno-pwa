@@ -18,6 +18,10 @@ export class IndexDbService {
 
   constructor(private http: HttpClient,) { }
 
+  /**
+   * @description Inicializa las bases de datos indexadas.
+   * @param catalogs - Arreglo con los nombres de los catálogos a inicializar.
+   */
   public async initializeDataBases(catalogs: string[]) {
     await openDB(this.dbName, 1, {
       upgrade(db) {
@@ -26,12 +30,11 @@ export class IndexDbService {
             db.createObjectStore(catalog, { keyPath: '_id', autoIncrement: true });
           }
         }
-        // Crear el object store para la cola de solicitudes
+
         if (!db.objectStoreNames.contains('requestQueue')) {
           db.createObjectStore('requestQueue', { keyPath: '_id', autoIncrement: true });
         }
 
-        // Crear el object store para la cola de solicitudes de vendedor
         if (!db.objectStoreNames.contains('requestQueueSeller')) {
           db.createObjectStore('requestQueueSeller', { keyPath: '_id', autoIncrement: true });
         }
@@ -39,6 +42,10 @@ export class IndexDbService {
     });
   }
 
+  /**
+   * @description Obtiene los elementos de un catálogo de la base de datos indexada.
+   * @param catalog - Nombre del catálogo a consultar.
+   */
   async getItems(catalog: string) {
     const db = await openDB(this.dbName, 1);
     const tx = db.transaction(catalog, 'readonly');
@@ -47,7 +54,10 @@ export class IndexDbService {
   }
 
   /**
-   * @description Sabes chunks of information in the indexedDB
+   * @description Guarda la información en la base de datos indexada.
+   * @param catalog - Nombre del catálogo donde se guardará la información.
+   * @param data - Arreglo con los elementos a guardar.
+   * @returns - Objeto con la información de la operación.
    */
   async saveInformation(catalog: string, data: any[]): Promise<any> {
     try {
@@ -60,19 +70,18 @@ export class IndexDbService {
       }
 
       await tx.done;
-
-      // Retornar el elemento guardado
       return { success: true, message: 'Data saved successfully' };
     } catch (error) {
       console.error('Error saving information offline:', error);
-
-      // Lanza el error para que pueda ser manejado en el lugar donde se llama
       throw new Error('Failed to save data offline');
     }
   }
 
   /**
-   * @description Save a single item in the indexedDB
+   * @description Guarda un solo elemento en la base de datos indexada.
+   * @param catalog - Nombre del catálogo donde se guardará la información.
+   * @param item - Elemento a guardar.
+   * @returns - Objeto con la información de la operación.
    */
   async saveItem(catalog: string, item: any): Promise<any> {
     try {
@@ -80,7 +89,7 @@ export class IndexDbService {
       const tx = db.transaction(catalog, 'readwrite');
       const store = tx.objectStore(catalog);
       if (!item._id) {
-        item._id = Date.now().toString(); // Genera un ID único temporal si no existe
+        item._id = Date.now().toString();
       }
       await store.put(item);
       await tx.done;
@@ -92,6 +101,10 @@ export class IndexDbService {
     }
   }
 
+  /**
+   * @description Limpia una tabla de la base de datos indexada.
+   * @param catalog - Nombre del catálogo a limpiar.
+   */
   async clearTable(catalog: string) {
     const db = await openDB(this.dbName, 1);
     const tx = db.transaction(catalog, 'readwrite');
@@ -100,6 +113,10 @@ export class IndexDbService {
     await tx.done;
   }
 
+  /**
+   * @description Elimina todas las tablas de la base de datos indexada.
+   * @param catalog - Nombre del catálogo a eliminar.
+   */
   async clearTables(catalogs: string[]) {
     const db = await openDB(this.dbName, 1);
     for (const catalog of catalogs) {
@@ -110,8 +127,11 @@ export class IndexDbService {
     }
   }
 
-  //REQUESTQUE PETITIONS
-  // Agregar una solicitud a la cola
+  /**
+   * @description Agrega una solicitud a la cola de peticiones.
+   * @param request - Objeto con la información de la solicitud.
+   * @returns - Booleano que indica si la solicitud fue agregada correctamente.
+   */
   async addRequestToQueue(request: any): Promise<boolean> {
     try {
       const db = await openDB(this.dbName);
@@ -120,28 +140,35 @@ export class IndexDbService {
       await store.add(request);
       await tx.done;
 
-      // Si llega aquí, significa que la solicitud fue agregada correctamente
       return true;
     } catch (error) {
       console.error('Error adding request to queue:', error);
-      // Si ocurre un error, retornamos false
       return false;
     }
   }
 
-  // Obtener todas las solicitudes de la cola
+  /**
+   * @description Obtiene todas las solicitudes de la cola de peticiones realizadas.
+   * @returns - Arreglo con las solicitudes almacenadas.
+   */
   async getAllRequests() {
     const db = await openDB(this.dbName);
     return await db.transaction(this.requestStoreName, 'readonly').objectStore(this.requestStoreName).getAll();
   }
 
-  // Obtener todas las solicitudes de la cola de peticiones realizadas
+  /**
+   * @description Obtiene todas las transacciones almacenadas.
+   * @returns - Arreglo con las transacciones almacenadas.
+   */
   async getAllTransactions() {
     const db = await openDB(this.dbName);
     return await db.transaction(this.transactionStoreName, 'readonly').objectStore(this.transactionStoreName).getAll();
   }
 
-  // Eliminar una solicitudes de la cola
+  /**
+   * @description Elimina una solicitud de la cola de peticiones.
+   * @param id - ID de la solicitud a eliminar.
+   */
   async deleteRequest(id: number) {
     const db = await openDB(this.dbName);
     const tx = db.transaction(this.requestStoreName, 'readwrite');
@@ -150,7 +177,11 @@ export class IndexDbService {
     await tx.done;
   }
 
-  //SERIALIZATION
+  /**
+   * @description Serializa los datos de un FormData a JSON.
+   * @param body - Datos del FormData a serializar.
+   * @returns - Objeto JSON con los datos serializados.
+   */
   public async serializeRequestBody(body: FormData): Promise<any> {
     try {
 
@@ -174,6 +205,11 @@ export class IndexDbService {
     }
   }
 
+  /**
+   * @description Convierte un archivo a Base64.
+   * @param file - Archivo a convertir.
+   * @returns - Cadena Base64 del archivo.
+   */
   private async fileToBase64(file: File): Promise<string> {
     try {
       const reader = new FileReader();
@@ -193,8 +229,10 @@ export class IndexDbService {
   }
 
   /**
-   * Deserializa los datos JSON a FormData.
+   * @description Deserializa los datos JSON a FormData.
    * Si los datos contienen Base64, los convierte de nuevo en Blob (en este caso imágenes).
+   * @param serializedData - Datos serializados a deserializar.
+   * @returns - Objeto FormData con los datos deserializados.
    */
   private deserializeRequestBody(serializedData: any): FormData {
     const formData = new FormData();
@@ -216,6 +254,11 @@ export class IndexDbService {
     return formData;
   }
 
+  /**
+   * @description Convierte una cadena Base64 a Blob.
+   * @param dataURI - Cadena Base64 a convertir.
+   * @returns - Objeto Blob con los datos convertidos.
+   */
   private dataURItoBlob(dataURI: string): Blob {
     const byteString = atob(dataURI.split(',')[1]);
     const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
@@ -230,8 +273,13 @@ export class IndexDbService {
   }
 
   /**
- * Procesa las solicitudes en cola una por una.
- */
+   * @description Ejecutar la cola de solicitudes una por una.
+   * Si una solicitud falla, se guarda en IndexedDB y se elimina de la cola.
+   * Si una solicitud tiene éxito, se elimina de la cola.
+   * Si una solicitud está en proceso, se salta y se procesa la siguiente.
+   * Si la cola está vacía, se detiene el proceso.
+   * @returns - Promesa que se resuelve cuando se procesan todas las solicitudes de la cola.
+   */
   async processQueue(): Promise<void> {
 
     // Evitar ejecución concurrente
@@ -244,14 +292,13 @@ export class IndexDbService {
 
     try {
 
-      const queue = await this.getAllRequests(); // Obtiene todas las solicitudes almacenadas
+      const queue = await this.getAllRequests();
 
       for (const item of queue) {
         const { _id, url, body, method, type } = item;
 
         const reqType = type === 'formdata' ? true : false;
 
-        // Determinar el formato de los datos
         const data = reqType ? this.deserializeRequestBody(body) : body;
 
         const request = {
@@ -261,16 +308,13 @@ export class IndexDbService {
         };
 
         try {
-          // Realizar la solicitud HTTP
           const response = await this.makeRequest(request, reqType).then(async () => {
-            // Guardar éxito en IndexedDB
             await this.saveToQueue({
               url,
               method,
               status: 'success',
               error: null,
             }).then(async () => {
-              // Eliminar la solicitud de la cola
               await this.deleteRequest(_id);
             });
           });
@@ -279,14 +323,12 @@ export class IndexDbService {
         } catch (error: any) {
           console.error(`Request to ${request.url} failed:`, error);
 
-          // Guardar error en IndexedDB
           await this.saveToQueue({
             url,
             method,
             status: 'failed',
             error: error.error.message || 'Unknown error',
           }).then(async () => {
-            // Eliminar la solicitud de la cola
             await this.deleteRequest(_id);
           });
         }
@@ -300,8 +342,10 @@ export class IndexDbService {
   }
 
   /**
-   * Método genérico para realizar peticiones HTTP.
+   * @description Método genérico para realizar peticiones HTTP.
    * @param request - Configuración de la petición (url, método, body).
+   * @param requestType - Tipo de solicitud (formdata o json).
+   * @returns - Promesa con la respuesta de la petición.
    */
   private async makeRequest(request: { url: string; method: string; body: any }, requestType: boolean): Promise<any> {
     try {
@@ -313,7 +357,6 @@ export class IndexDbService {
         });
       }
 
-      // Realiza la solicitud HTTP
       const response = await firstValueFrom(this.http.request(request.method, request.url, options));
       return response;
     } catch (error) {
@@ -325,6 +368,7 @@ export class IndexDbService {
   /**
  * Guarda el resultado de una transacción en IndexedDB.
  * @param transaction - Información de la transacción a guardar.
+ * @returns - Promesa que se resuelve cuando se guarda la transacción.
  */
   async saveToQueue(transaction: { url: string; method: string; status: string; error: string | null }): Promise<void> {
     const db = await openDB(this.dbName);
@@ -334,9 +378,10 @@ export class IndexDbService {
   }
 
   /**
-   * @description check if the request _id is already in the queue
+   * @description Check if the request _id is already in the queue
+   * @param _id - ID of the request to check
+   * @returns - Promise that resolves to the request if it is in the queue, or undefined if it is not.
    */
-
   async checkIfRequestIsInQueue(_id: number) {
     const db = await openDB(this.dbName);
     const tx = db.transaction(this.transactionStoreName, 'readonly');
@@ -346,6 +391,10 @@ export class IndexDbService {
     return request;
   }
 
+  /**
+   * @description Delete all completed requests from the queue
+   * @returns - Promise that resolves when all completed requests are deleted.
+   */
   async deleteCompletedRequests() {
     const db = await openDB(this.dbName);
     const tx = db.transaction(this.transactionStoreName, 'readwrite');
@@ -359,7 +408,11 @@ export class IndexDbService {
    *
    */
 
-  // Agregar una solicitud a la cola
+  /**
+   * @description Agrega una solicitud a la cola de peticiones del cliente.
+   * @param request - Objeto con la información de la solicitud.
+   * @returns - Booleano que indica si la solicitud fue agregada correctamente.
+   */
   async addRequestToQueueSeller(request: any): Promise<boolean> {
     try {
       const db = await openDB(this.dbName);
@@ -368,22 +421,26 @@ export class IndexDbService {
       await store.add(request);
       await tx.done;
 
-      // Si llega aquí, significa que la solicitud fue agregada correctamente
       return true;
     } catch (error) {
       console.error('Error adding request to queue:', error);
-      // Si ocurre un error, retornamos false
       return false;
     }
   }
 
-  // Obtener todas las solicitudes de la cola
+  /**
+   * @description Obtiene todas las solicitudes de la cola de peticiones del vendedor.
+   * @returns - Arreglo con las solicitudes almacenadas.
+   */
   async getAllRequestsSeller() {
     const db = await openDB(this.dbName);
     return await db.transaction(this.requestStoreSellerName, 'readonly').objectStore(this.requestStoreSellerName).getAll();
   }
 
-  // Eliminar una solicitudes de la cola
+  /**
+   * @description Elimina una solicitud de la cola de peticiones del vendedor.
+   * @param id - ID de la solicitud a eliminar.
+   */
   async deleteRequestSeller(id: number) {
     const db = await openDB(this.dbName);
     const tx = db.transaction(this.requestStoreSellerName, 'readwrite');
@@ -392,7 +449,11 @@ export class IndexDbService {
     await tx.done;
   }
 
-  //Make request to seller only json
+  /**
+   * @description Método genérico para realizar peticiones HTTP.
+   * @param request - Configuración de la petición (url, método, body).
+   * @returns - Promesa con la respuesta de la petición.
+   */
   async makeRequestSeller(request: { url: string; method: string; body: any }): Promise<any> {
     try {
       const options: any = { body: request.body };
@@ -401,7 +462,6 @@ export class IndexDbService {
         'Access-Control-Allow-Origin': '*',
       });
 
-      // Realiza la solicitud HTTP
       const response = await firstValueFrom(this.http.request(request.method, request.url, options));
       return response;
     } catch (error) {
@@ -410,7 +470,11 @@ export class IndexDbService {
     }
   }
 
-  //Save request to queue seller
+  /**
+   * @description Guarda el resultado de una transacción en IndexedDB.
+   * @param transaction - Información de la transacción a guardar.
+   * @returns - Promesa que se resuelve cuando se guarda la transacción.
+   */
   async saveToQueueSeller(transaction: { url: string; method: string; status: string; error: string | null }): Promise<void> {
     const db = await openDB(this.dbName);
     const tx = db.transaction(this.transactionStoreSellerName, 'readwrite');
@@ -418,7 +482,14 @@ export class IndexDbService {
     await tx.done;
   }
 
-  // Ejecutar la cola de solicitudes
+  /**
+   * @description Processa la cola de solicitudes del vendedor
+   * Si una solicitud falla, se guarda en IndexedDB y se elimina de la cola.
+   * Si una solicitud tiene éxito, se elimina de la cola.
+   * Si una solicitud está en proceso, se salta y se procesa la siguiente.
+   * Si la cola está vacía, se detiene el proceso.
+   * @returns - Promesa que se resuelve cuando se procesan todas las solicitudes de la cola.
+   */
   async processQueueSeller(): Promise<void> {
 
     // Evitar ejecución concurrente
@@ -443,17 +514,14 @@ export class IndexDbService {
         };
 
         try {
-
-          // Realizar la solicitud HTTP
           const response = await this.makeRequestSeller(request).then(async () => {
-            // Guardar éxito en IndexedDB
+
             await this.saveToQueueSeller({
               url,
               method,
               status: 'success',
               error: null,
             }).then(async () => {
-              // Eliminar la solicitud de la cola
               await this.deleteRequestSeller(_id);
             });
           });
@@ -462,14 +530,12 @@ export class IndexDbService {
         } catch (error: any) {
           console.error(`Request to ${request.url} failed:`, error);
 
-          // Guardar error en IndexedDB
           await this.saveToQueueSeller({
             url,
             method,
             status: 'failed',
             error: error.error.message || 'Unknown error',
           }).then(async () => {
-            // Eliminar la solicitud de la cola
             await this.deleteRequestSeller(_id);
           });
         }
@@ -481,5 +547,4 @@ export class IndexDbService {
       this.isProcessingQueue = false;
     }
   }
-
 }
