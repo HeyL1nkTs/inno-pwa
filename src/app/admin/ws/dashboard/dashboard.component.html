@@ -3,9 +3,9 @@
 
     <section>
         <mat-button-toggle-group name="favoriteColor" aria-label="Favorite Color" [hideSingleSelectionIndicator]="true">
-            <mat-button-toggle value="day" (click)="loadInformation('day')">Day</mat-button-toggle>
-            <mat-button-toggle value="week" (click)="loadInformation('week')">Week</mat-button-toggle>
-            <mat-button-toggle value="month" (click)="loadInformation('month')">Month</mat-button-toggle>
+            <mat-button-toggle value="day" (click)="loadInformation('day')">Dias</mat-button-toggle>
+            <mat-button-toggle value="week" (click)="loadInformation('week')">Semanas</mat-button-toggle>
+            <mat-button-toggle value="month" (click)="loadInformation('month')">Meses</mat-button-toggle>
         </mat-button-toggle-group>
     </section>
 
@@ -15,18 +15,16 @@
         </div>
 
         <div class="sellings-container">
-            <div class="most" appTooltip="Swlling amount: {{informationSelling.mostSellingAmount}}" placement="top" [delay]="200">
-                <img src="" alt="">
+            <div class="most">
+                <img src="{{informationSelling.image_url}}" alt="mostSelling">
                 <span>
-                    {{informationSelling.mostSelling}}
-                </span>
-            </div>
-            <div class="least" appTooltip="Swlling amount: {{informationSelling.lessSellingAmount}}" placement="top" [delay]="200">
-                <img src="" alt="">
-                <span>
-                    {{informationSelling.lessSelling}}
+                    {{informationSelling.name}}
                 </span>
             </div>
         </div>
     </div>
 </div>
+
+@if(wip){
+    <app-loading></app-loading>
+}

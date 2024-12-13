@@ -9,11 +9,13 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { TooltipDirective } from '../../../directives/tooltip.directive';
 import { fadeComponent } from '../../../animations/animate';
+import { SaleService } from '../../services/sale.service';
+import { LoadingComponent } from '../../html/loading/loading.component';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, MatButtonToggleModule, MatCheckboxModule, TooltipDirective],
+  imports: [CommonModule, MatButtonToggleModule, MatCheckboxModule, TooltipDirective, LoadingComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css',
   animations: [fadeComponent]
@@ -24,81 +26,23 @@ export class DashboardComponent implements OnInit {
   ctx: any;
   chartType: string = 'month';
   informationChart: Dashboard[] = [];
-  informationSelling: Selling;
+  informationSelling: any;
+  wip: boolean = false;
 
   @HostListener('window:resize', ['$event'])
   onBeforePrint(event: Event) {
     this.chart.resize();
   }
 
-  //TODO eliminar arrays
-  // Array de ventas por mes
-  mes = [
-    { x: 'January', y: Math.floor(Math.random() * 1000) },
-    { x: 'February', y: Math.floor(Math.random() * 1000) },
-    { x: 'March', y: Math.floor(Math.random() * 1000) },
-    { x: 'April', y: Math.floor(Math.random() * 1000) },
-    { x: 'May', y: Math.floor(Math.random() * 1000) },
-    { x: 'June', y: Math.floor(Math.random() * 1000) },
-    { x: 'July', y: Math.floor(Math.random() * 1000) },
-    { x: 'August', y: Math.floor(Math.random() * 1000) },
-    { x: 'September', y: Math.floor(Math.random() * 1000) },
-    { x: 'October', y: Math.floor(Math.random() * 1000) },
-    { x: 'November', y: Math.floor(Math.random() * 1000) },
-    { x: 'December', y: Math.floor(Math.random() * 1000) }
-  ];
-
-  // Array de ventas por día
-  dia = [
-    { x: 'Monday', y: Math.floor(Math.random() * 500) },
-    { x: 'Tuesday', y: Math.floor(Math.random() * 500) },
-    { x: 'Wednesday', y: Math.floor(Math.random() * 500) },
-    { x: 'Thursday', y: Math.floor(Math.random() * 500) },
-    { x: 'Friday', y: Math.floor(Math.random() * 500) },
-    { x: 'Saturday', y: Math.floor(Math.random() * 500) },
-    { x: 'Sunday', y: Math.floor(Math.random() * 500) }
-  ];
-
-  // Array de ventas por semana
-  semana = [
-    { x: 'Week 1', y: Math.floor(Math.random() * 2000) },
-    { x: 'Week 2', y: Math.floor(Math.random() * 2000) },
-    { x: 'Week 3', y: Math.floor(Math.random() * 2000) },
-    { x: 'Week 4', y: Math.floor(Math.random() * 2000) }
-  ];
-
-  salesDataForPeriods = {
-    day: new Selling(
-      'Product A', // _mostSelling
-      'Product B', // _lessSelling
-      500,         // _mostSellingAmount
-      50,          // _lessSellingAmount
-      'img_a_day.png', // _image_mostSelling
-      'img_b_day.png'  // _image_lessSelling
-    ),
-    month: new Selling(
-      'Product C', // _mostSelling
-      'Product D', // _lessSelling
-      1000,        // _mostSellingAmount
-      100,         // _lessSellingAmount
-      'img_c_month.png', // _image_mostSelling
-      'img_d_month.png'  // _image_lessSelling
-    ),
-    year: new Selling(
-      'Product E', // _mostSelling
-      'Product F', // _lessSelling
-      5000,        // _mostSellingAmount
-      500,         // _lessSellingAmount
-      'img_e_year.png', // _image_mostSelling
-      'img_f_year.png'  // _image_lessSelling
-    )
-  };
-
-
-  constructor() { }
+  constructor(private saleService: SaleService) { }
 
   async ngOnInit() {
     this.loadInformation(this.chartType);
+  }
+
+  async loadDashboard(type: string) {
+    const data = await this.saleService.getDashboard(type);
+    return data;
   }
 
   /**
@@ -126,7 +70,7 @@ export class DashboardComponent implements OnInit {
         data: {
           labels: labels,
           datasets: [{
-            label: 'Sales: ' + this.chartType,
+            label: 'Ventas',
             data: data,
             backgroundColor: 'rgb(27, 73, 101)'
           }]
@@ -152,6 +96,7 @@ export class DashboardComponent implements OnInit {
           }
         }
       });
+      this.wip = false;
     } else {
       console.log("Chart didn't load");
     }
@@ -162,23 +107,30 @@ export class DashboardComponent implements OnInit {
    * @param type string
    * @returns void
    */
-  loadInformation(type: string) {
+  async loadInformation(type: string) {
+    this.wip = true;
     this.informationChart = [];
     this.informationSelling = null;
-    //TODO obtener datos de la bd por tipo de venta
+    const data: any = await this.loadDashboard(type);
     switch (type) {
       case 'month':
-        //TODO aqui solo es igualar la consulta a la variable
-        this.informationChart = this.mes.map((v) => new Dashboard(v.x, v.y));
-        this.informationSelling = this.salesDataForPeriods.month;
+        /*this.informationChart = this.mes.map((v) => new Dashboard(v.x, v.y));
+        this.informationSelling = this.salesDataForPeriods.month;*/
+
+        this.informationChart = data.chartData.map((v) => new Dashboard(v.x, v.y));
+        this.informationSelling = data.mostSoldProduct;
         break;
       case 'day':
-        this.informationChart = this.dia.map((v) => new Dashboard(v.x, v.y));
-        this.informationSelling = this.salesDataForPeriods.day;
+        /*this.informationChart = this.dia.map((v) => new Dashboard(v.x, v.y));
+        this.informationSelling = this.salesDataForPeriods.day;*/
+        this.informationChart = data.chartData.map((v) => new Dashboard(v.x, v.y));
+        this.informationSelling = data.mostSoldProduct;
         break;
       case 'week':
-        this.informationChart = this.semana.map((v) => new Dashboard(v.x, v.y));
-        this.informationSelling = this.salesDataForPeriods.year;
+        /*this.informationChart = this.semana.map((v) => new Dashboard(v.x, v.y));
+        this.informationSelling = this.salesDataForPeriods.year;*/
+        this.informationChart = data.chartData.map((v) => new Dashboard(v.x, v.y));
+        this.informationSelling = data.mostSoldProduct;
         break;
       default:
         console.error('Type not found');
