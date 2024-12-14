@@ -13,13 +13,13 @@
 
         <div class="options" id="opc">
             @if(isAdmin){
-                <a id="logout" (click)="logoutProcess()">Logout</a>
-                <a href="/admin/profile">Manage profile</a>
+                <a id="logout" (click)="logoutProcess()">Cerrar Sesión</a>
+                <a href="/admin/profile">Perfil</a>
             } @else {
-                <a href="/client">Home</a>
+                <a href="/client">Inicio</a>
                 <a href="/client/petitions">Peticiones</a>
-                <a href="/client/profile">Manage profile</a>
-                <a id="logout" (click)="logoutProcess()">Logout</a>
+                <a href="/client/profile">Perfil</a>
+                <a id="logout" (click)="logoutProcess()">Cerrar Sesión</a>
             }
         </div>
     </div>
