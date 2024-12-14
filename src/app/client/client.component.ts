@@ -29,8 +29,8 @@ export class ClientComponent {
         if (!status) {
           this.toast.show('Estas fuera de linea, puedes continuar trabajando', ToastActions.INFO);
         } else {
-          //hacer peticiones
           this.idb.processQueueSeller();
+          this.toast.show('Se procesaron las solicitudes.!', ToastActions.INFO);
         }
       });
     } catch (error) {
@@ -52,7 +52,6 @@ export class ClientComponent {
           localStorage.removeItem('token');
           this.router.navigate(['/auth/logout']);
         }
-        this.router.navigate(['/auth/logout']);
         this.socket.endConnection();
       })
     });

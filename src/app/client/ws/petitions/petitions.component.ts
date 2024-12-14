@@ -1,25 +1,26 @@
-import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { MatButton, MatButtonModule } from '@angular/material/button';
-import { MatIcon, MatIconModule } from '@angular/material/icon';
-import { MatTable, MatTableModule } from '@angular/material/table';
+import { InternetService } from '../../../admin/services/internet.service';
 import { IndexDbService } from '../../../pwa/index.db.service';
-import { InternetService } from '../../services/internet.service';
+import { CommonModule } from '@angular/common';
+import { MatButtonModule, MatButton } from '@angular/material/button';
+import { MatIconModule, MatIcon } from '@angular/material/icon';
+import { MatTable, MatTableModule } from '@angular/material/table';
 import Swal from 'sweetalert2';
 
 @Component({
-  selector: 'app-queue',
+  selector: 'app-petitions',
   standalone: true,
   imports: [MatTable, MatTableModule, MatIconModule, MatButtonModule, MatIcon, MatButton, CommonModule],
-  templateUrl: './queue.component.html',
-  styleUrl: './queue.component.css'
+  templateUrl: './petitions.component.html',
+  styleUrl: './petitions.component.css'
 })
-export class QueueComponent {
+export class PetitionsComponent {
+
   displayedColumns: string[] = ['id', 'method', 'body'];
   displayedColumnsOnline: string[] = ['id', 'method', 'status']; // Online Table
   dataSource: any[] = [];
   dataSourceOnline: any[] = []; // Data for online table
-  isAppOnline:boolean = false;
+  isAppOnline: boolean = false;
 
   constructor(private idb: IndexDbService, private internetService: InternetService) { }
 
@@ -84,13 +85,13 @@ export class QueueComponent {
     }
   }
 
-  async getRequestsFromQueue(): Promise<any> {
-    const data = await this.idb.getAllRequests();
+  async getRequestsFromQueue() {
+    const data = await this.idb.getAllRequestsSeller();
     return data;
   }
 
-  async getOnlineRequests(): Promise<any> {
-    const data = await this.idb.getAllTransactions();
+  async getOnlineRequests() {
+    const data = await this.idb.getTransactionsSeller();
     return data;
   }
 

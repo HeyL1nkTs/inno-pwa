@@ -16,8 +16,10 @@
                 <a id="logout" (click)="logoutProcess()">Logout</a>
                 <a href="/admin/profile">Manage profile</a>
             } @else {
-                <a id="logout" (click)="logoutProcess()">Logout</a>
+                <a href="/client">Home</a>
+                <a href="/client/petitions">Peticiones</a>
                 <a href="/client/profile">Manage profile</a>
+                <a id="logout" (click)="logoutProcess()">Logout</a>
             }
         </div>
     </div>

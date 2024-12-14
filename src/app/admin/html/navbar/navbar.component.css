@@ -51,7 +51,7 @@ nav mat-icon {
     align-items: center;
     justify-content: space-evenly;
     flex-direction: column;
-    height: 80px;
+    height: auto;
     width: 150px;
     padding: 5px;
     opacity: 0;

@@ -42,6 +42,7 @@ export class SocketService {
    */
   listenForAdminLogout(): Observable<any> {
     return new Observable((observer) => {
+      console.log('Listening for closeSession');
       this.socket.on('closeSession', () => {
         observer.next();
       });

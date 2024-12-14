@@ -483,6 +483,26 @@ export class IndexDbService {
   }
 
   /**
+   * @description Obtiene todas las transacciones almacenadas del vendedor.
+   * @returns - Arreglo con las transacciones almacenadas.
+   */
+  async getTransactionsSeller() {
+    const db = await openDB(this.dbName);
+    return await db.transaction(this.transactionStoreSellerName, 'readonly').objectStore(this.transactionStoreSellerName).getAll();
+  }
+
+  /**
+   * @description Elimina todas las transacciones almacenadas del vendedor.
+   * @returns - Promesa que se resuelve cuando se eliminan todas las transacciones.
+   */
+  async deleteCompletedRequestsSeller() {
+    const db = await openDB(this.dbName);
+    const tx = db.transaction(this.transactionStoreSellerName, 'readwrite');
+    const store = tx.objectStore(this.transactionStoreSellerName);
+    await store.clear();
+  }
+
+  /**
    * @description Processa la cola de solicitudes del vendedor
    * Si una solicitud falla, se guarda en IndexedDB y se elimina de la cola.
    * Si una solicitud tiene éxito, se elimina de la cola.

@@ -63,14 +63,40 @@ export class StatusBarComponent {
   getConnection() {
     this.socket.listenForPaymentInfo().subscribe((data) => {
       if (data) {
+        console.log('Data from socket', data);
         const order = data.paymentInfo;
         const currentTotal = data.currentAmount;
         this.current_amount = currentTotal;
-        order.date = this.formatDate(new Date(order.date));
+        const parsedDate = new Date(order.date);
+        order.date = isNaN(parsedDate.getTime())
+          ? this.formatDate(new Date()) // Si la fecha es inválida, usar la fecha actual
+          : this.formatDate(parsedDate); // Si es válida, formatear la fecha original
+        order.temp = this.generateTemporalOrderNumber(order.orderNumber);
         this.cardData.push(order);
         this.cardData = this.consolidateOrders();
       }
     });
+  }
+
+  generateTemporalOrderNumber(orderNumber) {
+
+    if(_.isEmpty(orderNumber)) {
+      return this.ifObjectIdDoesNotExist();
+    }
+
+    const first = orderNumber.slice(0, 3);
+    const second = orderNumber.slice(-3);
+
+    return first + second;
+  }
+
+  ifObjectIdDoesNotExist() {
+    const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+    let randomId = '';
+    for (let i = 0; i < 6; i++) {
+      randomId += chars[Math.floor(Math.random() * chars.length)];
+    }
+    return randomId;
   }
 
   statusDay() {
@@ -154,7 +180,7 @@ export class StatusBarComponent {
         Swal.fire({
           icon: 'info',
           title: 'Caja abierta por otro admin',
-        }).then(() =>{
+        }).then(() => {
           this.openCashier(data);
         })
       }
@@ -168,7 +194,7 @@ export class StatusBarComponent {
           icon: 'info',
           title: 'Caja cerrada por otro admin',
           text: 'Hoy generaste $' + this.current_amount
-        }).then(()=>{
+        }).then(() => {
           this.closeCashierData(); // Lógica para manejar el cierre de la caja
         })
       }
@@ -205,7 +231,7 @@ export class StatusBarComponent {
     }
   }
 
-  consolidateOrders(){
+  consolidateOrders() {
     const consolidatedOrders = _.uniqBy(this.cardData, 'orderNumber');
     return consolidatedOrders;
   }
